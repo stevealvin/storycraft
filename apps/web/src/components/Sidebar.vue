@@ -2,7 +2,7 @@
   <aside class="w-60 border-r border-slate-800/80 bg-slate-950/60 backdrop-blur-md flex flex-col justify-between h-[calc(100vh-4rem)] sticky top-16 select-none">
     <div class="py-4 px-3 space-y-6">
       <div>
-        <div class="px-3 mb-2 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">?????</div>
+        <div class="px-3 mb-2 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">核心工作区</div>
         <nav class="space-y-1">
           <router-link v-for="item in mainNav" :key="item.path" :to="item.path"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group"
@@ -14,7 +14,7 @@
       </div>
 
       <div>
-        <div class="px-3 mb-2 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">????????</div>
+        <div class="px-3 mb-2 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">一致性与质量管控</div>
         <nav class="space-y-1">
           <router-link v-for="item in subNav" :key="item.path" :to="item.path"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group"
@@ -52,19 +52,19 @@ import {
 const route = useRoute();
 
 const mainNav = [
-  { name: '??????', path: '/', icon: LayoutDashboard },
-  { name: '?? AI ???', path: '/wizard', icon: Sparkles },
-  { name: '???????', path: '/outline', icon: FolderTree },
-  { name: '???????', path: '/studio', icon: PenTool },
+  { name: '项目概览看板', path: '/', icon: LayoutDashboard },
+  { name: '新书 AI 初始化', path: '/wizard', icon: Sparkles },
+  { name: '卷纲与章纲规划', path: '/outline', icon: FolderTree },
+  { name: '正文创作工作台', path: '/studio', icon: PenTool },
 ];
 
 const subNav = [
-  { name: '???????', path: '/characters', icon: Users },
-  { name: '???????', path: '/foreshadowing', icon: GitCommit },
-  { name: '????????', path: '/pacing', icon: TrendingUp },
-  { name: '??????', path: '/review', icon: ShieldCheck },
-  { name: '???? (Doctor)', path: '/doctor', icon: Stethoscope },
-  { name: '???????', path: '/query', icon: Search },
-  { name: '? API ?????', path: '/settings', icon: Settings },
+  { name: '角色与实体图谱', path: '/characters', icon: Users },
+  { name: '伏笔与线索追踪', path: '/foreshadowing', icon: GitCommit },
+  { name: '节奏与追读力分析', path: '/pacing', icon: TrendingUp },
+  { name: '多维质量审查', path: '/review', icon: ShieldCheck },
+  { name: '项目体检 (Doctor)', path: '/doctor', icon: Stethoscope },
+  { name: '状态与知识检索', path: '/query', icon: Search },
+  { name: '多 API 设置与管理', path: '/settings', icon: Settings },
 ];
 </script>
