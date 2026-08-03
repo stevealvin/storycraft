@@ -4,14 +4,14 @@
       <div class="flex items-center gap-4">
         <div class="flex items-center gap-2 text-sm font-bold text-slate-200">
           <PenTool class="w-4 h-4 text-indigo-400" />
-          <span>???????</span>
+          <span>正文创作工作台</span>
         </div>
 
         <div class="h-4 w-px bg-slate-800"></div>
 
         <select v-model="selectedChapNum" @change="loadChapterDetail" class="bg-slate-900 border border-slate-700 text-xs font-semibold text-indigo-300 rounded-lg px-3 py-1.5 focus:outline-none">
           <option v-for="c in chapters" :key="c.id" :value="c.chapter_num">
-            ? {{ c.chapter_num }} ?:{{ c.title }} ({{ c.word_count || 0 }}?)
+            第 {{ c.chapter_num }} 章：{{ c.title }} ({{ c.word_count || 0 }}字)
           </option>
         </select>
       </div>
@@ -19,14 +19,14 @@
       <div class="flex items-center gap-3">
         <button @click="saveChapter" :disabled="saving" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium flex items-center gap-1.5 transition-colors">
           <Save class="w-3.5 h-3.5 text-slate-400" />
-          <span>{{ saving ? '???...' : '??????' }}</span>
+          <span>{{ saving ? '保存中...' : '手动保存正文' }}</span>
         </button>
 
         <button @click="triggerWritePipeline" :disabled="writing"
           class="px-4 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white text-xs font-semibold flex items-center gap-2 shadow-lg shadow-indigo-500/20 disabled:opacity-50 transition-all">
           <Loader2 v-if="writing" class="w-4 h-4 animate-spin" />
           <Zap v-else class="w-4 h-4" />
-          <span>AI ???????? (/webnovel-write)</span>
+          <span>AI 一条龙生成与写章 (/webnovel-write)</span>
         </button>
       </div>
     </div>
@@ -36,7 +36,7 @@
         <div>
           <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
             <FileText class="w-3.5 h-3.5 text-indigo-400" />
-            <span>???????</span>
+            <span>本章细纲与看点</span>
           </div>
           <textarea v-model="currentChap.outline" rows="4" @blur="saveChapter"
             class="w-full bg-slate-900/80 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
@@ -45,7 +45,7 @@
         <div class="space-y-2 pt-2 border-t border-slate-800">
           <div class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
             <Users class="w-3.5 h-3.5 text-purple-400" />
-            <span>??????</span>
+            <span>关联登场角色</span>
           </div>
           <div class="space-y-1.5">
             <div v-for="char in characters" :key="char.id" class="p-2 rounded bg-slate-900/50 border border-slate-800 text-xs flex justify-between items-center">
@@ -58,7 +58,7 @@
         <div class="space-y-2 pt-2 border-t border-slate-800">
           <div class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
             <GitCommit class="w-3.5 h-3.5 text-emerald-400" />
-            <span>???????</span>
+            <span>悬挂未回收伏笔</span>
           </div>
           <div class="space-y-1.5">
             <div v-for="f in foreshadowings.slice(0, 3)" :key="f.id" class="p-2 rounded bg-slate-900/50 border border-slate-800 text-[11px] text-slate-300">
@@ -73,10 +73,10 @@
         <div class="flex items-center justify-between pb-2 border-b border-slate-800 text-xs">
           <input v-model="currentChap.title" @blur="saveChapter"
             class="font-bold text-base text-slate-100 bg-transparent focus:outline-none focus:bg-slate-900 px-2 py-1 rounded" />
-          <span class="font-mono text-slate-400">{{ currentChap.content?.length || 0 }} ?</span>
+          <span class="font-mono text-slate-400">{{ currentChap.content?.length || 0 }} 字</span>
         </div>
 
-        <textarea v-model="currentChap.content" placeholder="??????AI ????????????..."
+        <textarea v-model="currentChap.content" placeholder="输入或点击【AI 一条龙生成】自动生成正文..."
           class="flex-1 w-full bg-slate-950/40 border border-slate-800/80 rounded-xl p-4 text-sm leading-relaxed text-slate-100 font-sans focus:outline-none focus:border-indigo-500 resize-none"></textarea>
       </div>
 
@@ -84,13 +84,13 @@
         <div v-if="writing" class="p-4 rounded-xl bg-indigo-950/40 border border-indigo-800/50 space-y-3">
           <div class="flex items-center gap-2 text-xs font-bold text-indigo-300">
             <Loader2 class="w-4 h-4 animate-spin text-indigo-400" />
-            <span>AI ????????...</span>
+            <span>AI 写章流水线执行中...</span>
           </div>
           <div class="space-y-1.5 text-[11px] text-slate-300 font-mono">
-            <div class="flex items-center gap-2 text-emerald-400">? 1. RAG ????????</div>
-            <div class="flex items-center gap-2 text-emerald-400">? 2. ?????????</div>
-            <div class="flex items-center gap-2 text-indigo-400">? 3. ?????????</div>
-            <div class="flex items-center gap-2 text-slate-500">? 4. ????? commit ??</div>
+            <div class="flex items-center gap-2 text-emerald-400">✓ 1. RAG 状态与上下文调取</div>
+            <div class="flex items-center gap-2 text-emerald-400">✓ 2. 正文生成与情节描摹</div>
+            <div class="flex items-center gap-2 text-indigo-400">⟳ 3. 多维质量与爽点审查</div>
+            <div class="flex items-center gap-2 text-slate-500">○ 4. 事实提取与 commit 入账</div>
           </div>
         </div>
 
@@ -98,32 +98,32 @@
           <div class="flex items-center justify-between">
             <div class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
               <ShieldCheck class="w-4 h-4 text-emerald-400" />
-              <span>??????</span>
+              <span>多维审查报告</span>
             </div>
-            <span class="text-lg font-extrabold font-mono text-emerald-400">{{ currentChap.review_score }}?</span>
+            <span class="text-lg font-extrabold font-mono text-emerald-400">{{ currentChap.review_score }}分</span>
           </div>
 
           <div class="grid grid-cols-2 gap-2 text-[11px]">
             <div class="p-2 rounded bg-slate-900/60 border border-slate-800">
-              <div class="text-slate-400">????</div>
+              <div class="text-slate-400">爽点看点</div>
               <div class="font-mono font-bold text-indigo-400">{{ parsedReview.cool_points_score || '--' }}</div>
             </div>
             <div class="p-2 rounded bg-slate-900/60 border border-slate-800">
-              <div class="text-slate-400">?????</div>
+              <div class="text-slate-400">设定一致性</div>
               <div class="font-mono font-bold text-purple-400">{{ parsedReview.consistency_score || '--' }}</div>
             </div>
             <div class="p-2 rounded bg-slate-900/60 border border-slate-800">
-              <div class="text-slate-400">????</div>
+              <div class="text-slate-400">节奏控制</div>
               <div class="font-mono font-bold text-pink-400">{{ parsedReview.pacing_score || '--' }}</div>
             </div>
             <div class="p-2 rounded bg-slate-900/60 border border-slate-800">
-              <div class="text-slate-400">??????</div>
+              <div class="text-slate-400">章尾追读钩子</div>
               <div class="font-mono font-bold text-emerald-400">{{ parsedReview.retention_score || '--' }}</div>
             </div>
           </div>
 
           <div v-if="parsedReview.suggestions" class="space-y-1 text-xs">
-            <div class="text-slate-400 font-semibold">??????:</div>
+            <div class="text-slate-400 font-semibold">主编改进建议:</div>
             <ul class="list-disc list-inside text-slate-300 space-y-1">
               <li v-for="(sug, idx) in parsedReview.suggestions" :key="idx">{{ sug }}</li>
             </ul>
@@ -131,7 +131,7 @@
         </div>
 
         <div v-else-if="!writing" class="text-center py-8 text-slate-500 text-xs">
-          ?????AI ???????????????
+          点击顶部【AI 一条龙生成】自动写章并触发审查
         </div>
       </div>
     </div>
