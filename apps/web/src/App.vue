@@ -18,8 +18,10 @@
             <!-- Main Layout with Fixed Sidebar & Inner Scroll Content -->
             <div class="flex flex-1 px-2.5 py-2.5 gap-2.5 overflow-hidden h-[calc(100vh-4.25rem)]">
               <Sidebar />
-              <main class="flex-1 overflow-y-auto p-1 w-full max-w-7xl mx-auto h-full">
-                <router-view />
+              <main class="flex-1 overflow-y-auto h-full w-full pr-1">
+                <div class="max-w-7xl mx-auto p-2">
+                  <router-view />
+                </div>
               </main>
             </div>
           </div>

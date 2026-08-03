@@ -70,7 +70,7 @@
 import { ref } from 'vue';
 import { useProjectStore } from '@/stores/project';
 import { NCard, NInput, NButton, NGrid, NGi, NTag, NList, NListItem, NThing } from 'naive-ui';
-import { Search, Sparkles } from 'lucide-vue-next';
+import { Search, Sparkles } from '@lucide/vue';
 
 const projectStore = useProjectStore();
 const queryInput = ref('');

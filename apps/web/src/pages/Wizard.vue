@@ -181,7 +181,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useProjectStore } from '@/stores/project';
 import { NCard, NSteps, NStep, NGrid, NGi, NButton, NInput, NForm, NFormItem, NTag } from 'naive-ui';
-import { Sparkles, BookOpen, Users, Globe, CheckCircle2 } from 'lucide-vue-next';
+import { Sparkles, BookOpen, Users, Globe, CheckCircle2 } from '@lucide/vue';
 
 const router = useRouter();
 const projectStore = useProjectStore();

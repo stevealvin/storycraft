@@ -49,7 +49,7 @@
 import { ref, watch, onMounted } from 'vue';
 import { useProjectStore } from '@/stores/project';
 import { NCard, NButton, NTag, NList, NListItem, NThing } from 'naive-ui';
-import { Stethoscope, RefreshCw } from 'lucide-vue-next';
+import { Stethoscope, RefreshCw } from '@lucide/vue';
 
 const projectStore = useProjectStore();
 const loading = ref(false);

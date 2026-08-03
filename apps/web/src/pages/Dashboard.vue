@@ -286,7 +286,7 @@ import {
   ShieldCheck,
   Zap,
   CheckCircle2
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 
 const projectStore = useProjectStore();
 const chapters = ref<any[]>([]);

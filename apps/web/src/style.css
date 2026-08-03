@@ -57,7 +57,7 @@ html.dark .gradient-text {
   -webkit-text-fill-color: transparent;
 }
 
-/* Custom Scrollbar */
+/* Light Soft Tint Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -68,10 +68,10 @@ html.dark .gradient-text {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.25);
-  border-radius: 4px;
+  background: rgba(99, 102, 241, 0.15);
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5);
+  background: rgba(99, 102, 241, 0.35);
 }

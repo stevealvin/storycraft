@@ -3,11 +3,9 @@
     :class="themeStore.isDark ? 'bg-slate-900/80 shadow-slate-950/60 text-slate-100' : 'bg-white/80 shadow-slate-200/50 text-slate-900'">
     <div class="flex items-center gap-5">
       <router-link to="/" class="flex items-center gap-3 group">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-md shadow-indigo-500/25 group-hover:scale-105 transition-transform duration-200">
-          <BookOpen class="w-4.5 h-4.5 text-white" />
-        </div>
+        <LogoIcon :size="36" class="group-hover:scale-105 transition-transform duration-200" />
         <div>
-          <span class="text-lg font-bold tracking-tight gradient-text">StoryCraft</span>
+          <span class="text-lg font-bold tracking-tight gradient-text leading-tight block">StoryCraft</span>
           <span class="text-[9px] font-medium uppercase tracking-wider block" :class="themeStore.isDark ? 'text-slate-400' : 'text-slate-500'">Web Novel AI Engine v6.2</span>
         </div>
       </router-link>
@@ -98,8 +96,9 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useProjectStore } from '@/stores/project';
 import { useThemeStore } from '@/stores/theme';
+import LogoIcon from '@/components/LogoIcon.vue';
 import { NSelect, NButton, NTag, NTooltip } from 'naive-ui';
-import { BookOpen, Activity, Plus, Sun, Moon } from 'lucide-vue-next';
+import { BookOpen, Activity, Plus, Sun, Moon } from '@lucide/vue';
 
 const projectStore = useProjectStore();
 const themeStore = useThemeStore();

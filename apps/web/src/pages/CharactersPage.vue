@@ -79,7 +79,7 @@
 import { ref, watch, onMounted } from 'vue';
 import { useProjectStore } from '@/stores/project';
 import { NCard, NGrid, NGi, NButton, NModal, NForm, NFormItem, NInput, NTag } from 'naive-ui';
-import { Users, Plus } from 'lucide-vue-next';
+import { Users, Plus } from '@lucide/vue';
 
 const projectStore = useProjectStore();
 const characters = ref<any[]>([]);

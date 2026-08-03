@@ -106,7 +106,7 @@
 import { ref, reactive, onMounted } from 'vue';
 import { useProjectStore, ApiProvider } from '@/stores/project';
 import { NCard, NGrid, NGi, NButton, NModal, NForm, NFormItem, NInput, NTag } from 'naive-ui';
-import { Settings, Plus, Cpu, Wifi, Edit3, Trash2, CheckCircle2 } from 'lucide-vue-next';
+import { Settings, Plus, Cpu, Wifi, Edit3, Trash2, CheckCircle2 } from '@lucide/vue';
 
 const projectStore = useProjectStore();
 

@@ -97,7 +97,7 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useProjectStore } from '@/stores/project';
 import { NCard, NSelect, NButton, NGrid, NGi, NStatistic, NTag, NList, NListItem } from 'naive-ui';
-import { ShieldCheck } from 'lucide-vue-next';
+import { ShieldCheck } from '@lucide/vue';
 
 const projectStore = useProjectStore();
 const chapters = ref<any[]>([]);

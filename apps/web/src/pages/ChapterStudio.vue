@@ -186,7 +186,7 @@ import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useProjectStore } from '@/stores/project';
 import { NCard, NGrid, NGi, NSelect, NButton, NInput, NTag, NSpin, NEmpty } from 'naive-ui';
-import { PenTool, Save, Zap, FileText, Users, GitCommit, ShieldCheck } from 'lucide-vue-next';
+import { PenTool, Save, Zap, FileText, Users, GitCommit, ShieldCheck } from '@lucide/vue';
 
 const route = useRoute();
 const projectStore = useProjectStore();

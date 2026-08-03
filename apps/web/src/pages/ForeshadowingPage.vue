@@ -91,7 +91,7 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useProjectStore } from '@/stores/project';
 import { NCard, NGrid, NGi, NButton, NModal, NForm, NFormItem, NInput, NInputNumber, NSelect, NRadioGroup, NRadioButton, NTag, NEmpty } from 'naive-ui';
-import { GitCommit, Plus } from 'lucide-vue-next';
+import { GitCommit, Plus } from '@lucide/vue';
 
 const projectStore = useProjectStore();
 const foreshadowings = ref<any[]>([]);

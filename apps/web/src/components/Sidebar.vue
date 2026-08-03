@@ -56,7 +56,7 @@ import {
   Stethoscope,
   Search,
   Settings
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 
 const route = useRoute();
 const themeStore = useThemeStore();

@@ -76,7 +76,7 @@
 import { ref, watch, onMounted } from 'vue';
 import { useProjectStore } from '@/stores/project';
 import { NCard, NGrid, NGi, NButton, NInput, NTag, NEmpty } from 'naive-ui';
-import { FolderTree, Sparkles, FileText, PenTool } from 'lucide-vue-next';
+import { FolderTree, Sparkles, FileText, PenTool } from '@lucide/vue';
 
 const projectStore = useProjectStore();
 const chapters = ref<any[]>([]);

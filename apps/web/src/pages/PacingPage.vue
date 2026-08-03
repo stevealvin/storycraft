@@ -40,7 +40,7 @@
 import { ref, watch, onMounted } from 'vue';
 import { useProjectStore } from '@/stores/project';
 import { NCard, NList, NListItem, NThing, NGrid, NGi, NEmpty } from 'naive-ui';
-import { TrendingUp } from 'lucide-vue-next';
+import { TrendingUp } from '@lucide/vue';
 
 const projectStore = useProjectStore();
 const pacingList = ref<any[]>([]);
