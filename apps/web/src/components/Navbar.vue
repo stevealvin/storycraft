@@ -15,12 +15,12 @@
 
       <!-- Project Selector -->
       <div class="flex items-center gap-2">
-        <span class="text-xs text-slate-400 font-medium">????:</span>
+        <span class="text-xs text-slate-400 font-medium">当前作品:</span>
         <div class="w-52">
           <n-select
             v-model:value="selectedProjectId"
             :options="projectOptions"
-            placeholder="??????"
+            placeholder="选择小说作品"
             size="small"
             @update:value="onProjectChange"
           />
@@ -32,14 +32,14 @@
     <div class="flex items-center gap-4">
       <div v-if="projectStore.currentProject" class="hidden md:flex items-center gap-4 px-3 py-1.5 rounded-lg bg-slate-900/60 border border-slate-800 text-xs">
         <div>
-          <span class="text-slate-400">??: </span>
+          <span class="text-slate-400">字数: </span>
           <span class="font-semibold text-indigo-400 font-mono">{{ projectStore.currentProject.total_words?.toLocaleString() || 0 }}</span>
-          <span class="text-slate-500"> / {{ (projectStore.currentProject.target_words / 10000).toFixed(0) }}??</span>
+          <span class="text-slate-500"> / {{ (projectStore.currentProject.target_words / 10000).toFixed(0) }}万字</span>
         </div>
         <div class="h-4 w-px bg-slate-800"></div>
         <div>
-          <span class="text-slate-400">????: </span>
-          <span class="font-semibold text-purple-400 font-mono">{{ projectStore.currentProject.chapters_count || 0 }} ?</span>
+          <span class="text-slate-400">已写章节: </span>
+          <span class="font-semibold text-purple-400 font-mono">{{ projectStore.currentProject.chapters_count || 0 }} 章</span>
         </div>
       </div>
 
@@ -60,12 +60,12 @@
       <router-link to="/doctor" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors"
         :class="doctorBadgeClass">
         <Activity class="w-3.5 h-3.5" />
-        <span>??: {{ projectStore.doctorStatus?.health_score || '--' }}?</span>
+        <span>体检: {{ projectStore.doctorStatus?.health_score || '--' }}分</span>
       </router-link>
 
       <router-link to="/wizard" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-medium shadow-md shadow-indigo-500/20 transition-all">
         <Plus class="w-4 h-4" />
-        <span>?? AI ???</span>
+        <span>新书 AI 初始化</span>
       </router-link>
     </div>
   </header>
