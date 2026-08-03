@@ -2,83 +2,83 @@
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-          <Users class="w-6 h-6 text-pink-400" />
+        <h1 class="text-2xl font-bold tracking-tight flex items-center gap-2">
+          <Users class="w-6 h-6 text-pink-500" />
           <span>角色与实体人设图谱</span>
         </h1>
-        <p class="text-slate-400 text-sm mt-1">管理登场角色性格、境界等级、所属阵营，并在章节写完后自动更新状态与关系网络。</p>
+        <p class="text-sm opacity-75 mt-1">管理登场角色性格、境界等级、所属阵营，并在章节写完后自动更新状态与关系网络。</p>
       </div>
 
-      <button @click="showModal = true"
-        class="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-medium text-xs flex items-center gap-2 shadow-lg shadow-pink-500/20">
-        <Plus class="w-4 h-4" />
-        <span>添加新角色</span>
-      </button>
+      <n-button type="primary" size="medium" @click="showModal = true">
+        <template #icon><Plus class="w-4 h-4" /></template>
+        添加新角色
+      </n-button>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div v-for="char in characters" :key="char.id"
-        class="glass-card p-5 rounded-xl border border-slate-800 space-y-3 relative group">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="font-bold text-base text-slate-100">{{ char.name }}</span>
-            <span class="px-2 py-0.5 rounded text-[10px] font-medium"
-              :class="char.role === '主角' ? 'bg-indigo-950 text-indigo-300 border border-indigo-800' : 'bg-slate-800 text-slate-400'">
-              {{ char.role }}
-            </span>
-          </div>
+    <n-grid x-gap="16" y-gap="16" cols="1 m:2 l:3" responsive="screen">
+      <n-gi v-for="char in characters" :key="char.id">
+        <n-card hoverable class="rounded-xl h-full flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-base">{{ char.name }}</span>
+                <n-tag :type="char.role === '主角' ? 'primary' : 'default'" size="small">
+                  {{ char.role }}
+                </n-tag>
+              </div>
 
-          <span class="px-2.5 py-0.5 rounded text-[11px] font-mono font-semibold bg-purple-950/60 border border-purple-800 text-purple-300">
-            {{ char.cultivation }}
-          </span>
-        </div>
-
-        <p class="text-xs text-slate-300 leading-relaxed">{{ char.description }}</p>
-
-        <div class="pt-2 border-t border-slate-900 flex items-center justify-between text-xs text-slate-500 font-mono">
-          <span>阵营: {{ char.faction }}</span>
-          <span class="text-emerald-400">状态: {{ char.status }}</span>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="showModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div class="glass-panel p-6 rounded-2xl border border-slate-800 max-w-md w-full space-y-4">
-        <h3 class="font-bold text-slate-200 text-lg">新增角色人设</h3>
-
-        <div class="space-y-3">
-          <div>
-            <label class="block text-xs text-slate-400 mb-1">角色姓名</label>
-            <input v-model="newChar.name" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:outline-none" />
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">定位 (主角/配角/反派)</label>
-              <input v-model="newChar.role" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:outline-none" />
+              <n-tag type="purple" size="small" class="font-mono">
+                {{ char.cultivation }}
+              </n-tag>
             </div>
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">力量境界/等级</label>
-              <input v-model="newChar.cultivation" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:outline-none" />
-            </div>
-          </div>
-          <div>
-            <label class="block text-xs text-slate-400 mb-1">人设描述与背景</label>
-            <textarea v-model="newChar.description" rows="3" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:outline-none"></textarea>
-          </div>
-        </div>
 
-        <div class="flex justify-end gap-3 pt-2">
-          <button @click="showModal = false" class="px-4 py-2 rounded-lg bg-slate-900 text-slate-400 text-xs">取消</button>
-          <button @click="createCharacter" class="px-4 py-2 rounded-lg bg-pink-600 text-white text-xs font-medium">创建角色</button>
+            <p class="text-xs opacity-80 leading-relaxed">{{ char.description }}</p>
+          </div>
+
+          <div class="pt-3 mt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs opacity-75 font-mono">
+            <span>阵营: {{ char.faction }}</span>
+            <span class="text-emerald-500 font-semibold">状态: {{ char.status }}</span>
+          </div>
+        </n-card>
+      </n-gi>
+    </n-grid>
+
+    <n-modal v-model:show="showModal" preset="card" title="新增角色人设" class="max-w-md rounded-2xl">
+      <n-form size="medium">
+        <n-form-item label="角色姓名">
+          <n-input v-model:value="newChar.name" placeholder="例如: 楚风" />
+        </n-form-item>
+        <n-grid x-gap="12" cols="2">
+          <n-gi>
+            <n-form-item label="定位 (主角/配角/反派)">
+              <n-input v-model:value="newChar.role" placeholder="例如: 主角" />
+            </n-form-item>
+          </n-gi>
+          <n-gi>
+            <n-form-item label="力量境界/等级">
+              <n-input v-model:value="newChar.cultivation" placeholder="例如: 练气一层" />
+            </n-form-item>
+          </n-gi>
+        </n-grid>
+        <n-form-item label="人设描述与背景">
+          <n-input v-model:value="newChar.description" type="textarea" :rows="3" placeholder="描述角色的性格、外貌特征与核心利益动机..." />
+        </n-form-item>
+      </n-form>
+
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <n-button @click="showModal = false">取消</n-button>
+          <n-button type="primary" @click="createCharacter">创建角色</n-button>
         </div>
-      </div>
-    </div>
+      </template>
+    </n-modal>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
 import { useProjectStore } from '@/stores/project';
+import { NCard, NGrid, NGi, NButton, NModal, NForm, NFormItem, NInput, NTag } from 'naive-ui';
 import { Users, Plus } from 'lucide-vue-next';
 
 const projectStore = useProjectStore();

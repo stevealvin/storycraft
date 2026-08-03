@@ -1,67 +1,82 @@
 <template>
   <div class="space-y-6">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-          <FolderTree class="w-6 h-6 text-purple-400" />
+        <h1 class="text-2xl font-bold tracking-tight flex items-center gap-2">
+          <FolderTree class="w-6 h-6 text-purple-500" />
           <span>卷纲与章纲大纲规划</span>
         </h1>
-        <p class="text-slate-400 text-sm mt-1">基于总纲智能拆卷拆章，包含章节核心事件、情绪爽点、章尾追读钩子与伏笔排期。</p>
+        <p class="text-sm opacity-75 mt-1">基于总纲智能拆卷拆章，包含章节核心事件、情绪爽点、章尾追读钩子与伏笔排期。</p>
       </div>
 
-      <button @click="generateMoreChapters" :disabled="loading"
-        class="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium text-xs flex items-center gap-2 shadow-lg shadow-purple-500/20 disabled:opacity-50">
-        <Loader2 v-if="loading" class="w-4 h-4 animate-spin" />
-        <Sparkles v-else class="w-4 h-4" />
-        <span>AI 续画下 10 章细纲</span>
-      </button>
+      <n-button
+        type="primary"
+        size="medium"
+        :loading="loading"
+        @click="generateMoreChapters"
+      >
+        <template #icon><Sparkles class="w-4 h-4" /></template>
+        AI 续画下 10 章细纲
+      </n-button>
     </div>
 
-    <div v-if="chapters.length === 0" class="glass-panel p-12 rounded-2xl text-center space-y-4 border border-slate-800">
-      <FileText class="w-12 h-12 text-slate-600 mx-auto" />
-      <div class="text-slate-300 font-medium">当前作品尚未规划章节细纲</div>
-      <button @click="generateMoreChapters" :disabled="loading" class="px-5 py-2.5 rounded-xl bg-purple-600 text-white text-xs font-medium inline-flex items-center gap-2">
-        <Sparkles class="w-4 h-4" />
-        <span>立即智能规划第 1 卷 10 章细纲</span>
-      </button>
-    </div>
+    <n-card v-if="chapters.length === 0" class="rounded-2xl text-center py-12">
+      <n-empty description="当前作品尚未规划章节细纲">
+        <template #icon>
+          <FileText class="w-10 h-10 text-slate-400" />
+        </template>
+        <template #extra>
+          <n-button type="primary" size="medium" :loading="loading" @click="generateMoreChapters">
+            <template #icon><Sparkles class="w-4 h-4" /></template>
+            立即智能规划第 1 卷 10 章细纲
+          </n-button>
+        </template>
+      </n-empty>
+    </n-card>
 
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div v-for="chap in chapters" :key="chap.id"
-        class="glass-card p-5 rounded-xl border border-slate-800 space-y-3 flex flex-col justify-between">
-        <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-sm text-indigo-300">第 {{ chap.chapter_num }} 章：{{ chap.title }}</span>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-medium"
-              :class="chap.status === 'draft' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-slate-800 text-slate-400'">
-              {{ chap.status === 'draft' ? '正文已写' : '大纲就绪' }}
-            </span>
+    <n-grid v-else x-gap="16" y-gap="16" cols="1 m:2" responsive="screen">
+      <n-gi v-for="chap in chapters" :key="chap.id">
+        <n-card hoverable class="rounded-xl h-full flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-indigo-500">第 {{ chap.chapter_num }} 章：{{ chap.title }}</span>
+              <n-tag :type="chap.status === 'draft' ? 'success' : 'default'" size="small">
+                {{ chap.status === 'draft' ? '正文已写' : '大纲就绪' }}
+              </n-tag>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium opacity-75 mb-1">本章剧情细纲</label>
+              <n-input
+                v-model:value="chap.outline"
+                type="textarea"
+                :rows="3"
+                placeholder="本章细纲..."
+                @blur="updateChapter(chap)"
+              />
+            </div>
           </div>
 
-          <div>
-            <label class="block text-[11px] font-medium text-slate-500 mb-1">本章剧情细纲</label>
-            <textarea v-model="chap.outline" rows="3" @blur="updateChapter(chap)"
-              class="w-full bg-slate-950/60 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
+          <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
+            <span class="font-mono opacity-75">字数: {{ chap.word_count || 0 }} 字</span>
+            <router-link :to="`/studio?chap=${chap.chapter_num}`">
+              <n-button size="small" type="primary" secondary>
+                <template #icon><PenTool class="w-3.5 h-3.5" /></template>
+                开始撰写正文
+              </n-button>
+            </router-link>
           </div>
-        </div>
-
-        <div class="flex items-center justify-between pt-2 border-t border-slate-900 text-xs">
-          <span class="text-slate-500 font-mono">字数: {{ chap.word_count || 0 }} 字</span>
-          <router-link :to="`/studio?chap=${chap.chapter_num}`"
-            class="px-3 py-1 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 text-xs flex items-center gap-1 font-medium">
-            <PenTool class="w-3.5 h-3.5" />
-            <span>开始撰写正文</span>
-          </router-link>
-        </div>
-      </div>
-    </div>
+        </n-card>
+      </n-gi>
+    </n-grid>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
 import { useProjectStore } from '@/stores/project';
-import { FolderTree, Sparkles, Loader2, FileText, PenTool } from 'lucide-vue-next';
+import { NCard, NGrid, NGi, NButton, NInput, NTag, NEmpty } from 'naive-ui';
+import { FolderTree, Sparkles, FileText, PenTool } from 'lucide-vue-next';
 
 const projectStore = useProjectStore();
 const chapters = ref<any[]>([]);

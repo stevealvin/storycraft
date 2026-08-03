@@ -1,140 +1,183 @@
 <template>
   <div class="h-[calc(100vh-6rem)] flex flex-col space-y-4">
-    <div class="glass-panel px-6 py-3.5 rounded-xl border border-slate-800 flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <div class="flex items-center gap-2 text-sm font-bold text-slate-200">
-          <PenTool class="w-4 h-4 text-indigo-400" />
-          <span>正文创作工作台</span>
-        </div>
-
-        <div class="h-4 w-px bg-slate-800"></div>
-
-        <select v-model="selectedChapNum" @change="loadChapterDetail" class="bg-slate-900 border border-slate-700 text-xs font-semibold text-indigo-300 rounded-lg px-3 py-1.5 focus:outline-none">
-          <option v-for="c in chapters" :key="c.id" :value="c.chapter_num">
-            第 {{ c.chapter_num }} 章：{{ c.title }} ({{ c.word_count || 0 }}字)
-          </option>
-        </select>
-      </div>
-
-      <div class="flex items-center gap-3">
-        <button @click="saveChapter" :disabled="saving" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium flex items-center gap-1.5 transition-colors">
-          <Save class="w-3.5 h-3.5 text-slate-400" />
-          <span>{{ saving ? '保存中...' : '手动保存正文' }}</span>
-        </button>
-
-        <button @click="triggerWritePipeline" :disabled="writing"
-          class="px-4 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white text-xs font-semibold flex items-center gap-2 shadow-lg shadow-indigo-500/20 disabled:opacity-50 transition-all">
-          <Loader2 v-if="writing" class="w-4 h-4 animate-spin" />
-          <Zap v-else class="w-4 h-4" />
-          <span>AI 一条龙生成与写章 (/webnovel-write)</span>
-        </button>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden">
-      <div class="lg:col-span-3 glass-panel p-4 rounded-xl border border-slate-800 flex flex-col space-y-4 overflow-y-auto">
-        <div>
-          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <FileText class="w-3.5 h-3.5 text-indigo-400" />
-            <span>本章细纲与看点</span>
+    <!-- Top Bar -->
+    <n-card size="small" class="rounded-xl">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2 font-bold text-sm">
+            <PenTool class="w-4 h-4 text-indigo-500" />
+            <span>正文创作工作台</span>
           </div>
-          <textarea v-model="currentChap.outline" rows="4" @blur="saveChapter"
-            class="w-full bg-slate-900/80 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
-        </div>
 
-        <div class="space-y-2 pt-2 border-t border-slate-800">
-          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-            <Users class="w-3.5 h-3.5 text-purple-400" />
-            <span>关联登场角色</span>
-          </div>
-          <div class="space-y-1.5">
-            <div v-for="char in characters" :key="char.id" class="p-2 rounded bg-slate-900/50 border border-slate-800 text-xs flex justify-between items-center">
-              <span class="font-medium text-indigo-300">{{ char.name }}</span>
-              <span class="text-[10px] text-purple-400 font-mono">{{ char.cultivation }}</span>
-            </div>
+          <div class="w-64">
+            <n-select
+              v-model:value="selectedChapNum"
+              :options="chapterSelectOptions"
+              size="small"
+              placeholder="选择章节"
+              @update:value="loadChapterDetail"
+            />
           </div>
         </div>
 
-        <div class="space-y-2 pt-2 border-t border-slate-800">
-          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-            <GitCommit class="w-3.5 h-3.5 text-emerald-400" />
-            <span>悬挂未回收伏笔</span>
-          </div>
-          <div class="space-y-1.5">
-            <div v-for="f in foreshadowings.slice(0, 3)" :key="f.id" class="p-2 rounded bg-slate-900/50 border border-slate-800 text-[11px] text-slate-300">
-              <div class="font-semibold text-emerald-400">{{ f.title }}</div>
-              <div class="text-slate-400 line-clamp-1 mt-0.5">{{ f.description }}</div>
-            </div>
-          </div>
+        <div class="flex items-center gap-3">
+          <n-button size="small" secondary :loading="saving" @click="saveChapter">
+            <template #icon><Save class="w-3.5 h-3.5" /></template>
+            {{ saving ? '保存中...' : '手动保存正文' }}
+          </n-button>
+
+          <n-button
+            type="primary"
+            size="small"
+            :loading="writing"
+            @click="triggerWritePipeline"
+          >
+            <template #icon><Zap class="w-4 h-4" /></template>
+            AI 一条龙生成与写章 (/webnovel-write)
+          </n-button>
         </div>
       </div>
+    </n-card>
 
-      <div class="lg:col-span-6 glass-panel p-4 rounded-xl border border-slate-800 flex flex-col space-y-3">
-        <div class="flex items-center justify-between pb-2 border-b border-slate-800 text-xs">
-          <input v-model="currentChap.title" @blur="saveChapter"
-            class="font-bold text-base text-slate-100 bg-transparent focus:outline-none focus:bg-slate-900 px-2 py-1 rounded" />
-          <span class="font-mono text-slate-400">{{ currentChap.content?.length || 0 }} 字</span>
-        </div>
-
-        <textarea v-model="currentChap.content" placeholder="输入或点击【AI 一条龙生成】自动生成正文..."
-          class="flex-1 w-full bg-slate-950/40 border border-slate-800/80 rounded-xl p-4 text-sm leading-relaxed text-slate-100 font-sans focus:outline-none focus:border-indigo-500 resize-none"></textarea>
-      </div>
-
-      <div class="lg:col-span-3 glass-panel p-4 rounded-xl border border-slate-800 flex flex-col space-y-4 overflow-y-auto">
-        <div v-if="writing" class="p-4 rounded-xl bg-indigo-950/40 border border-indigo-800/50 space-y-3">
-          <div class="flex items-center gap-2 text-xs font-bold text-indigo-300">
-            <Loader2 class="w-4 h-4 animate-spin text-indigo-400" />
-            <span>AI 写章流水线执行中...</span>
-          </div>
-          <div class="space-y-1.5 text-[11px] text-slate-300 font-mono">
-            <div class="flex items-center gap-2 text-emerald-400">✓ 1. RAG 状态与上下文调取</div>
-            <div class="flex items-center gap-2 text-emerald-400">✓ 2. 正文生成与情节描摹</div>
-            <div class="flex items-center gap-2 text-indigo-400">⟳ 3. 多维质量与爽点审查</div>
-            <div class="flex items-center gap-2 text-slate-500">○ 4. 事实提取与 commit 入账</div>
-          </div>
-        </div>
-
-        <div v-if="currentChap.review_report" class="space-y-3">
-          <div class="flex items-center justify-between">
-            <div class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-              <ShieldCheck class="w-4 h-4 text-emerald-400" />
-              <span>多维审查报告</span>
+    <!-- Main Workspace -->
+    <n-grid x-gap="16" y-gap="16" cols="1 lg:12" class="flex-1 overflow-hidden">
+      <!-- Left Sidebar: Outline, Characters, Foreshadowing -->
+      <n-gi span="3" class="h-full">
+        <n-card title="章节信息" size="small" class="h-full rounded-xl flex flex-col overflow-y-auto">
+          <div class="space-y-4">
+            <div>
+              <div class="text-xs font-bold opacity-75 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <FileText class="w-3.5 h-3.5 text-indigo-500" />
+                <span>本章细纲与看点</span>
+              </div>
+              <n-input
+                v-model:value="currentChap.outline"
+                type="textarea"
+                placeholder="输入本章大纲..."
+                :rows="4"
+                @blur="saveChapter"
+              />
             </div>
-            <span class="text-lg font-extrabold font-mono text-emerald-400">{{ currentChap.review_score }}分</span>
-          </div>
 
-          <div class="grid grid-cols-2 gap-2 text-[11px]">
-            <div class="p-2 rounded bg-slate-900/60 border border-slate-800">
-              <div class="text-slate-400">爽点看点</div>
-              <div class="font-mono font-bold text-indigo-400">{{ parsedReview.cool_points_score || '--' }}</div>
+            <div class="space-y-2 pt-3 border-t border-slate-200 dark:border-slate-800">
+              <div class="text-xs font-bold opacity-75 uppercase tracking-wider flex items-center gap-1.5">
+                <Users class="w-3.5 h-3.5 text-purple-500" />
+                <span>关联登场角色</span>
+              </div>
+              <div class="space-y-1.5">
+                <div v-for="char in characters" :key="char.id" class="p-2 rounded border border-slate-200 dark:border-slate-800 text-xs flex justify-between items-center">
+                  <span class="font-medium text-indigo-500">{{ char.name }}</span>
+                  <n-tag size="small" type="purple" :bordered="false">{{ char.cultivation }}</n-tag>
+                </div>
+              </div>
             </div>
-            <div class="p-2 rounded bg-slate-900/60 border border-slate-800">
-              <div class="text-slate-400">设定一致性</div>
-              <div class="font-mono font-bold text-purple-400">{{ parsedReview.consistency_score || '--' }}</div>
-            </div>
-            <div class="p-2 rounded bg-slate-900/60 border border-slate-800">
-              <div class="text-slate-400">节奏控制</div>
-              <div class="font-mono font-bold text-pink-400">{{ parsedReview.pacing_score || '--' }}</div>
-            </div>
-            <div class="p-2 rounded bg-slate-900/60 border border-slate-800">
-              <div class="text-slate-400">章尾追读钩子</div>
-              <div class="font-mono font-bold text-emerald-400">{{ parsedReview.retention_score || '--' }}</div>
+
+            <div class="space-y-2 pt-3 border-t border-slate-200 dark:border-slate-800">
+              <div class="text-xs font-bold opacity-75 uppercase tracking-wider flex items-center gap-1.5">
+                <GitCommit class="w-3.5 h-3.5 text-emerald-500" />
+                <span>悬挂未回收伏笔</span>
+              </div>
+              <div class="space-y-1.5">
+                <div v-for="f in foreshadowings.slice(0, 3)" :key="f.id" class="p-2 rounded border border-slate-200 dark:border-slate-800 text-[11px]">
+                  <div class="font-semibold text-emerald-500">{{ f.title }}</div>
+                  <div class="opacity-75 line-clamp-1 mt-0.5">{{ f.description }}</div>
+                </div>
+              </div>
             </div>
           </div>
+        </n-card>
+      </n-gi>
 
-          <div v-if="parsedReview.suggestions" class="space-y-1 text-xs">
-            <div class="text-slate-400 font-semibold">主编改进建议:</div>
-            <ul class="list-disc list-inside text-slate-300 space-y-1">
-              <li v-for="(sug, idx) in parsedReview.suggestions" :key="idx">{{ sug }}</li>
-            </ul>
+      <!-- Main Editor -->
+      <n-gi span="6" class="h-full">
+        <n-card size="small" class="h-full rounded-xl flex flex-col">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800 mb-3">
+            <n-input
+              v-model:value="currentChap.title"
+              placeholder="章节标题"
+              size="medium"
+              class="font-bold text-base w-2/3"
+              @blur="saveChapter"
+            />
+            <span class="font-mono text-xs opacity-75">{{ currentChap.content?.length || 0 }} 字</span>
           </div>
-        </div>
 
-        <div v-else-if="!writing" class="text-center py-8 text-slate-500 text-xs">
-          点击顶部【AI 一条龙生成】自动写章并触发审查
-        </div>
-      </div>
-    </div>
+          <n-input
+            v-model:value="currentChap.content"
+            type="textarea"
+            placeholder="输入或点击【AI 一条龙生成】自动生成正文..."
+            class="flex-1 text-sm font-sans"
+            style="height: calc(100% - 3.5rem);"
+          />
+        </n-card>
+      </n-gi>
+
+      <!-- Right Panel: AI Status & Review Report -->
+      <n-gi span="3" class="h-full">
+        <n-card title="AI 审查与建议" size="small" class="h-full rounded-xl flex flex-col overflow-y-auto">
+          <div v-if="writing" class="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 space-y-3">
+            <div class="flex items-center gap-2 text-xs font-bold text-indigo-500">
+              <n-spin size="small" />
+              <span>AI 写章流水线执行中...</span>
+            </div>
+            <div class="space-y-1 text-[11px] font-mono">
+              <div class="text-emerald-500">✓ 1. RAG 状态与上下文调取</div>
+              <div class="text-emerald-500">✓ 2. 正文生成与情节描摹</div>
+              <div class="text-indigo-500">⟳ 3. 多维质量与爽点审查</div>
+              <div class="opacity-50">○ 4. 事实提取与 commit 入账</div>
+            </div>
+          </div>
+
+          <div v-if="currentChap.review_report" class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="text-xs font-bold flex items-center gap-1.5">
+                <ShieldCheck class="w-4 h-4 text-emerald-500" />
+                <span>多维审查报告</span>
+              </div>
+              <n-tag type="success" size="medium" class="font-mono font-bold">
+                {{ currentChap.review_score }}分
+              </n-tag>
+            </div>
+
+            <n-grid x-gap="8" y-gap="8" cols="2">
+              <n-gi>
+                <n-card size="small" class="rounded-lg text-center">
+                  <div class="text-xs opacity-75">爽点看点</div>
+                  <div class="font-mono font-bold text-indigo-500 text-base">{{ parsedReview.cool_points_score || '--' }}</div>
+                </n-card>
+              </n-gi>
+              <n-gi>
+                <n-card size="small" class="rounded-lg text-center">
+                  <div class="text-xs opacity-75">设定一致性</div>
+                  <div class="font-mono font-bold text-purple-500 text-base">{{ parsedReview.consistency_score || '--' }}</div>
+                </n-card>
+              </n-gi>
+              <n-gi>
+                <n-card size="small" class="rounded-lg text-center">
+                  <div class="text-xs opacity-75">节奏控制</div>
+                  <div class="font-mono font-bold text-pink-500 text-base">{{ parsedReview.pacing_score || '--' }}</div>
+                </n-card>
+              </n-gi>
+              <n-gi>
+                <n-card size="small" class="rounded-lg text-center">
+                  <div class="text-xs opacity-75">章尾追读钩子</div>
+                  <div class="font-mono font-bold text-emerald-500 text-base">{{ parsedReview.retention_score || '--' }}</div>
+                </n-card>
+              </n-gi>
+            </n-grid>
+
+            <div v-if="parsedReview.suggestions" class="space-y-1 text-xs">
+              <div class="font-semibold">主编改进建议:</div>
+              <ul class="list-disc list-inside opacity-90 space-y-1">
+                <li v-for="(sug, idx) in parsedReview.suggestions" :key="idx">{{ sug }}</li>
+              </ul>
+            </div>
+          </div>
+
+          <n-empty v-else-if="!writing" description="点击顶部【AI 一条龙生成】自动写章并触发审查" class="py-8 text-xs" />
+        </n-card>
+      </n-gi>
+    </n-grid>
   </div>
 </template>
 
@@ -142,7 +185,8 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useProjectStore } from '@/stores/project';
-import { PenTool, Save, Zap, FileText, Users, GitCommit, ShieldCheck, Loader2 } from 'lucide-vue-next';
+import { NCard, NGrid, NGi, NSelect, NButton, NInput, NTag, NSpin, NEmpty } from 'naive-ui';
+import { PenTool, Save, Zap, FileText, Users, GitCommit, ShieldCheck } from 'lucide-vue-next';
 
 const route = useRoute();
 const projectStore = useProjectStore();
@@ -155,6 +199,13 @@ const foreshadowings = ref<any[]>([]);
 
 const saving = ref(false);
 const writing = ref(false);
+
+const chapterSelectOptions = computed(() => {
+  return chapters.value.map(c => ({
+    label: `第 ${c.chapter_num} 章：${c.title} (${c.word_count || 0}字)`,
+    value: c.chapter_num,
+  }));
+});
 
 const parsedReview = computed(() => {
   if (!currentChap.value.review_report) return {};

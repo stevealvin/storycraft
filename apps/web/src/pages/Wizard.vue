@@ -1,153 +1,178 @@
 <template>
   <div class="max-w-4xl mx-auto space-y-8 py-4">
     <div class="text-center space-y-2">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-mono">
-        <Sparkles class="w-3.5 h-3.5" />
-        <span>/webnovel-init 深度初始化</span>
+      <div class="inline-flex items-center gap-2">
+        <n-tag type="primary" size="small" round :bordered="false">
+          <template #icon><Sparkles class="w-3.5 h-3.5" /></template>
+          /webnovel-init 深度初始化
+        </n-tag>
       </div>
-      <h1 class="text-3xl font-bold tracking-tight text-white">新书 AI 设定与大纲构建器</h1>
-      <p class="text-slate-400 text-sm">分阶段 AI 问答，从题材立意、金手指、角色矩阵、世界观到全书四幕式总纲一步到位。</p>
+      <h1 class="text-3xl font-bold tracking-tight">新书 AI 设定与大纲构建器</h1>
+      <p class="text-sm opacity-75">分阶段 AI 问答，从题材立意、金手指、角色矩阵、世界观到全书四幕式总纲一步到位。</p>
     </div>
 
-    <div class="flex items-center justify-between glass-panel p-4 rounded-xl border border-slate-800 text-xs font-medium">
-      <div v-for="(step, idx) in steps" :key="idx" class="flex items-center gap-2"
-        :class="currentStep >= idx ? 'text-indigo-400 font-semibold' : 'text-slate-500'">
-        <div class="w-6 h-6 rounded-full flex items-center justify-center font-mono border"
-          :class="currentStep > idx ? 'bg-indigo-600 border-indigo-500 text-white' : currentStep === idx ? 'border-indigo-500 text-indigo-400' : 'border-slate-800 text-slate-600'">
-          {{ idx + 1 }}
+    <!-- Steps -->
+    <n-card class="rounded-xl">
+      <n-steps :current="currentStep + 1" status="process">
+        <n-step title="选题材构想" description="确定题材与核心看点" />
+        <n-step title="立意与金手指" description="书名、简介与核心设定" />
+        <n-step title="角色矩阵人设" description="登场主角与配角" />
+        <n-step title="世界观与总纲" description="力量体系与大纲" />
+      </n-steps>
+    </n-card>
+
+    <!-- Step 1 -->
+    <n-card v-if="currentStep === 0" title="第一步：选择题材与初步构想" class="rounded-2xl">
+      <template #header-extra>
+        <BookOpen class="w-5 h-5 text-indigo-500" />
+      </template>
+
+      <div class="space-y-6">
+        <div>
+          <label class="block text-xs font-medium opacity-75 mb-2">选择网文题材分类</label>
+          <n-grid x-gap="12" y-gap="12" cols="2 s:4" responsive="screen">
+            <n-gi v-for="g in genres" :key="g.name">
+              <n-card
+                hoverable
+                size="small"
+                class="cursor-pointer rounded-xl h-full"
+                :class="selectedGenre === g.name ? 'border-2 border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/30' : ''"
+                @click="selectedGenre = g.name"
+              >
+                <div class="font-semibold text-sm">{{ g.name }}</div>
+                <div class="text-xs opacity-75 mt-1 line-clamp-1">{{ g.description }}</div>
+              </n-card>
+            </n-gi>
+          </n-grid>
         </div>
-        <span>{{ step }}</span>
-        <ChevronRight v-if="idx < steps.length - 1" class="w-4 h-4 text-slate-700 ml-2" />
-      </div>
-    </div>
 
-    <div v-if="currentStep === 0" class="glass-panel p-8 rounded-2xl border border-slate-800 space-y-6">
-      <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
-        <BookOpen class="w-5 h-5 text-indigo-400" />
-        <span>第一步：选择题材与初步构想</span>
-      </h2>
+        <div>
+          <label class="block text-xs font-medium opacity-75 mb-2">灵感/核心看点构想 (如主角金手指、反套路设定等)</label>
+          <n-input
+            v-model:value="userConcept"
+            type="textarea"
+            :rows="3"
+            placeholder="例如：主角穿成退婚废柴，但绑定了【因果反转系统】，只要挨打或者被看不起就能疯狂爆出神级奖励..."
+          />
+        </div>
+      </div>
+
+      <template #footer>
+        <div class="flex justify-end">
+          <n-button type="primary" size="medium" :loading="loading" @click="runStep1">
+            <template #icon><Sparkles class="w-4 h-4" /></template>
+            生成立意与书名
+          </n-button>
+        </div>
+      </template>
+    </n-card>
+
+    <!-- Step 2 -->
+    <n-card v-if="currentStep === 1" title="第二步：确定书名与核心爽点" class="rounded-2xl">
+      <template #header-extra>
+        <Sparkles class="w-5 h-5 text-indigo-500" />
+      </template>
+
+      <div class="space-y-6">
+        <div>
+          <label class="block text-xs font-medium opacity-75 mb-2">选择推荐书名</label>
+          <n-grid x-gap="12" y-gap="12" cols="1 s:3" responsive="screen">
+            <n-gi v-for="t in premiseResult.titles" :key="t">
+              <n-card
+                hoverable
+                size="small"
+                class="cursor-pointer rounded-xl text-center font-bold text-sm"
+                :class="selectedTitle === t ? 'border-2 border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/30 text-indigo-500' : ''"
+                @click="selectedTitle = t"
+              >
+                《{{ t }}》
+              </n-card>
+            </n-gi>
+          </n-grid>
+        </div>
+
+        <n-form size="medium">
+          <n-form-item label="作品简介">
+            <n-input v-model:value="premiseResult.premise" type="textarea" :rows="3" />
+          </n-form-item>
+
+          <n-form-item label="金手指/核心能力运行逻辑">
+            <n-input v-model:value="premiseResult.golden_finger" />
+          </n-form-item>
+        </n-form>
+      </div>
+
+      <template #footer>
+        <div class="flex justify-between">
+          <n-button @click="currentStep = 0">上一步</n-button>
+          <n-button type="primary" :loading="loading" @click="runStep2">
+            下一步：生成主要角色
+          </n-button>
+        </div>
+      </template>
+    </n-card>
+
+    <!-- Step 3 -->
+    <n-card v-if="currentStep === 2" title="第三步：登场角色人设矩阵" class="rounded-2xl">
+      <template #header-extra>
+        <Users class="w-5 h-5 text-indigo-500" />
+      </template>
 
       <div class="space-y-4">
-        <div>
-          <label class="block text-xs font-medium text-slate-400 mb-2">选择网文题材分类</label>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <button v-for="g in genres" :key="g.name" type="button"
-              @click="selectedGenre = g.name"
-              class="p-3 rounded-xl border text-left transition-all"
-              :class="selectedGenre === g.name ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300 shadow-md shadow-indigo-500/10' : 'bg-slate-900/40 border-slate-800 text-slate-400 hover:border-slate-700'">
-              <div class="font-semibold text-sm">{{ g.name }}</div>
-              <div class="text-[11px] text-slate-400 mt-1 line-clamp-1">{{ g.description }}</div>
-            </button>
+        <n-card v-for="(char, idx) in charactersResult" :key="idx" size="small" class="rounded-xl">
+          <div class="space-y-3">
+            <n-grid x-gap="12" cols="3">
+              <n-gi>
+                <n-input v-model:value="char.name" placeholder="角色姓名" font-weight="bold" />
+              </n-gi>
+              <n-gi>
+                <n-input v-model:value="char.role" placeholder="角色定位" />
+              </n-gi>
+              <n-gi>
+                <n-input v-model:value="char.cultivation" placeholder="境界等级" />
+              </n-gi>
+            </n-grid>
+            <n-input v-model:value="char.description" type="textarea" :rows="2" placeholder="人设描述..." />
           </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-medium text-slate-400 mb-2">灵感/核心看点构想 (如主角金手指、反套路设定等)</label>
-          <textarea v-model="userConcept" rows="3" placeholder="例如：主角穿成退婚废柴，但绑定了【因果反转系统】，只要挨打或者被看不起就能疯狂爆出神级奖励..."
-            class="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
-        </div>
+        </n-card>
       </div>
 
-      <div class="flex justify-end">
-        <button @click="runStep1" :disabled="loading" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-medium text-sm flex items-center gap-2 shadow-lg shadow-indigo-500/20 transition-all disabled:opacity-50">
-          <Loader2 v-if="loading" class="w-4 h-4 animate-spin" />
-          <Sparkles v-else class="w-4 h-4" />
-          <span>生成立意与书名</span>
-        </button>
-      </div>
-    </div>
-
-    <div v-if="currentStep === 1" class="glass-panel p-8 rounded-2xl border border-slate-800 space-y-6">
-      <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
-        <Sparkles class="w-5 h-5 text-indigo-400" />
-        <span>第二步：确定书名与核心爽点</span>
-      </h2>
-
-      <div class="space-y-4">
-        <div>
-          <label class="block text-xs font-medium text-slate-400 mb-2">选择推荐书名</label>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <button v-for="t in premiseResult.titles" :key="t" type="button"
-              @click="selectedTitle = t"
-              class="p-3 rounded-xl border text-center transition-all font-bold text-sm"
-              :class="selectedTitle === t ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300' : 'bg-slate-900/40 border-slate-800 text-slate-400'">
-              《{{ t }}》
-            </button>
-          </div>
+      <template #footer>
+        <div class="flex justify-between">
+          <n-button @click="currentStep = 1">上一步</n-button>
+          <n-button type="primary" :loading="loading" @click="runStep3">
+            下一步：生成世界观与力量体系
+          </n-button>
         </div>
+      </template>
+    </n-card>
 
-        <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">作品简介</label>
-          <textarea v-model="premiseResult.premise" rows="3" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
+    <!-- Step 4 -->
+    <n-card v-if="currentStep === 3" title="第四步：世界观、力量体系与四幕式总纲" class="rounded-2xl">
+      <template #header-extra>
+        <Globe class="w-5 h-5 text-indigo-500" />
+      </template>
+
+      <n-form size="medium" class="space-y-4">
+        <n-form-item label="力量体系与境界划分">
+          <n-input v-model:value="worldResult.power_system" type="textarea" :rows="4" class="font-mono text-xs" />
+        </n-form-item>
+
+        <n-form-item label="世界观背景与核心法则">
+          <n-input v-model:value="worldResult.world_setting" type="textarea" :rows="4" class="text-xs" />
+        </n-form-item>
+      </n-form>
+
+      <template #footer>
+        <div class="flex justify-between">
+          <n-button @click="currentStep = 2">上一步</n-button>
+          <n-button type="success" size="medium" :loading="loading" @click="finishInit">
+            <template #icon><CheckCircle2 class="w-4 h-4" /></template>
+            完成初始化并创建项目
+          </n-button>
         </div>
-
-        <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">金手指/核心能力运行逻辑</label>
-          <input v-model="premiseResult.golden_finger" type="text" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" />
-        </div>
-      </div>
-
-      <div class="flex justify-between">
-        <button @click="currentStep = 0" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-sm">上一步</button>
-        <button @click="runStep2" :disabled="loading" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-medium flex items-center gap-2 shadow-lg shadow-indigo-500/20">
-          <Loader2 v-if="loading" class="w-4 h-4 animate-spin" />
-          <span>下一步：生成主要角色</span>
-        </button>
-      </div>
-    </div>
-
-    <div v-if="currentStep === 2" class="glass-panel p-8 rounded-2xl border border-slate-800 space-y-6">
-      <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
-        <Users class="w-5 h-5 text-indigo-400" />
-        <span>第三步：登场角色人设矩阵</span>
-      </h2>
-
-      <div class="space-y-4">
-        <div v-for="(char, idx) in charactersResult" :key="idx" class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
-          <div class="flex items-center gap-3">
-            <input v-model="char.name" class="font-bold text-indigo-300 bg-slate-950/80 px-2 py-1 rounded border border-slate-800 text-sm" />
-            <input v-model="char.role" class="text-xs text-purple-400 bg-slate-950/80 px-2 py-1 rounded border border-slate-800" />
-            <input v-model="char.cultivation" class="text-xs text-emerald-400 bg-slate-950/80 px-2 py-1 rounded border border-slate-800 font-mono" />
-          </div>
-          <textarea v-model="char.description" rows="2" class="w-full bg-slate-950/40 border border-slate-800 rounded p-2 text-xs text-slate-300 focus:outline-none"></textarea>
-        </div>
-      </div>
-
-      <div class="flex justify-between">
-        <button @click="currentStep = 1" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-sm">上一步</button>
-        <button @click="runStep3" :disabled="loading" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-medium flex items-center gap-2 shadow-lg shadow-indigo-500/20">
-          <Loader2 v-if="loading" class="w-4 h-4 animate-spin" />
-          <span>下一步：生成世界观与力量体系</span>
-        </button>
-      </div>
-    </div>
-
-    <div v-if="currentStep === 3" class="glass-panel p-8 rounded-2xl border border-slate-800 space-y-6">
-      <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
-        <Globe class="w-5 h-5 text-indigo-400" />
-        <span>第四步：世界观、力量体系与四幕式总纲</span>
-      </h2>
-
-      <div class="space-y-4">
-        <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">力量体系与境界划分</label>
-          <textarea v-model="worldResult.power_system" rows="4" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 font-mono"></textarea>
-        </div>
-
-        <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">世界观背景与核心法则</label>
-          <textarea v-model="worldResult.world_setting" rows="4" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-xs text-slate-200"></textarea>
-        </div>
-      </div>
-
-      <div class="flex justify-between">
-        <button @click="currentStep = 2" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-sm">上一步</button>
-        <button @click="finishInit" :disabled="loading" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-sm font-medium flex items-center gap-2 shadow-lg shadow-emerald-500/20">
-          <CheckCircle2 class="w-4 h-4" />
-          <span>完成初始化并创建项目</span>
-        </button>
-      </div>
-    </div>
+      </template>
+    </n-card>
   </div>
 </template>
 
@@ -155,12 +180,12 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useProjectStore } from '@/stores/project';
-import { Sparkles, BookOpen, ChevronRight, Users, Globe, CheckCircle2, Loader2 } from 'lucide-vue-next';
+import { NCard, NSteps, NStep, NGrid, NGi, NButton, NInput, NForm, NFormItem, NTag } from 'naive-ui';
+import { Sparkles, BookOpen, Users, Globe, CheckCircle2 } from 'lucide-vue-next';
 
 const router = useRouter();
 const projectStore = useProjectStore();
 
-const steps = ['选题材构想', '立意与金手指', '角色矩阵人设', '世界观与总纲'];
 const currentStep = ref(0);
 const loading = ref(false);
 
