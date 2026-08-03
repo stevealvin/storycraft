@@ -26,24 +26,24 @@ export async function queryProjectState(projectId: string, query: string) {
   `).all(projectId, keyword, keyword, keyword) as any[];
 
   const contextText = `
-????????:
-${matchedChars.map(c => `- ${c.name} (${c.role}, ${c.cultivation}): ${c.description}`).join('\n') || '?????'}
+【关于角色匹配】:
+${matchedChars.map(c => `- ${c.name} (${c.role}, ${c.cultivation}): ${c.description}`).join('\n') || '无匹配角色'}
 
-????????:
-${matchedForeshadowings.map(f => `- ${f.title} (${f.status}, ???${f.planted_chapter}?): ${f.description}`).join('\n') || '?????'}
+【关于伏笔匹配】:
+${matchedForeshadowings.map(f => `- ${f.title} (${f.status}, 埋于第${f.planted_chapter}章): ${f.description}`).join('\n') || '无匹配伏笔'}
 
-????????:
-${matchedChapters.map(c => `- ?${c.chapter_num}??${c.title}?(${c.status}, ??:${c.review_score}): ${c.outline}`).join('\n') || '?????'}
+【关于章节匹配】:
+${matchedChapters.map(c => `- 第${c.chapter_num}章《${c.title}》(${c.status}, 评分:${c.review_score}): ${c.outline}`).join('\n') || '无匹配章节'}
 `;
 
   const aiAnswerPrompt = `
-??????????${project.title}????:
+用户提出了关于小说《${project.title}》的查询：
 "${query}"
 
-??????????????????:
+以下是从项目数据库和索引中召回的信息：
 ${contextText}
 
-?????????,???????????????????
+请综合上述召回事实，为作者做出精准、全面且结构清晰的解答。
 `;
 
   const aiAnswer = await chatCompletion([{ role: 'user', content: aiAnswerPrompt }], { temperature: 0.5 });
