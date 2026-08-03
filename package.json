@@ -1,0 +1,19 @@
+{
+  "name": "storycraft-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:web\"",
+    "dev:server": "npm run dev --workspace=@storycraft/server",
+    "dev:web": "npm run dev --workspace=@storycraft/web",
+    "build": "npm run build --workspace=@storycraft/web",
+    "server": "npm run start --workspace=@storycraft/server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
