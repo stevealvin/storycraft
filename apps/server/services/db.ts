@@ -159,7 +159,7 @@ export const db = {
           }
         }
         if (cleanSql.includes('FROM characters')) {
-          if (cleanSql.includes('WHERE project_id = ? AND status = "??"')) return data.characters.filter(c => c.project_id === params[0] && c.status === '??');
+          if (cleanSql.includes('WHERE project_id = ? AND status = "活跃"')) return data.characters.filter(c => c.project_id === params[0] && c.status === '活跃');
           if (cleanSql.includes('WHERE project_id = ? AND (name LIKE ?')) {
             const kw = String(params[1] || '').replace(/%/g, '').toLowerCase();
             return data.characters.filter(c => c.project_id === params[0] && (c.name.toLowerCase().includes(kw) || c.description.toLowerCase().includes(kw) || c.cultivation.toLowerCase().includes(kw)));
@@ -167,7 +167,7 @@ export const db = {
           if (cleanSql.includes('WHERE project_id = ?')) return data.characters.filter(c => c.project_id === params[0]);
         }
         if (cleanSql.includes('FROM foreshadowings')) {
-          if (cleanSql.includes('WHERE project_id = ? AND status != "???"')) return data.foreshadowings.filter(f => f.project_id === params[0] && f.status !== '???');
+          if (cleanSql.includes('WHERE project_id = ? AND status != "已回收"')) return data.foreshadowings.filter(f => f.project_id === params[0] && f.status !== '已回收');
           if (cleanSql.includes('WHERE project_id = ? AND (title LIKE ?')) {
             const kw = String(params[1] || '').replace(/%/g, '').toLowerCase();
             return data.foreshadowings.filter(f => f.project_id === params[0] && (f.title.toLowerCase().includes(kw) || f.description.toLowerCase().includes(kw)));
@@ -189,7 +189,7 @@ export const db = {
         if (cleanSql.includes('SELECT COUNT(*) as count FROM characters')) return { count: data.characters.filter(c => c.project_id === params[0]).length };
         if (cleanSql.includes('SELECT COUNT(*) as count FROM chapters') || cleanSql.includes('SELECT COUNT(*) as c FROM chapters')) return { count: data.chapters.filter(c => c.project_id === params[0]).length, c: data.chapters.filter(c => c.project_id === params[0]).length };
         if (cleanSql.includes('SELECT COUNT(*) as count FROM volumes')) return { count: data.volumes.filter(v => v.project_id === params[0]).length };
-        if (cleanSql.includes('SELECT COUNT(*) as count FROM foreshadowings')) return { count: data.foreshadowings.filter(f => f.project_id === params[0] && f.status !== '???').length };
+        if (cleanSql.includes('SELECT COUNT(*) as count FROM foreshadowings')) return { count: data.foreshadowings.filter(f => f.project_id === params[0] && f.status !== '已回收').length };
         if (cleanSql.includes('SELECT SUM(word_count) as total FROM chapters')) {
           const sum = data.chapters.filter(c => c.project_id === params[0]).reduce((acc, curr) => acc + (curr.word_count || 0), 0);
           return { total: sum };
@@ -261,12 +261,12 @@ export const db = {
           data.characters = data.characters.filter(c => c.id !== params[0]);
         } else if (cleanSql.includes('INSERT INTO foreshadowings')) {
           data.foreshadowings.push({
-            id: params[0], project_id: params[1], title: params[2], description: params[3], status: params[4] || '???',
-            planted_chapter: params[5], target_chapter: params[6] || null, impact_level: params[7] || '????'
+            id: params[0], project_id: params[1], title: params[2], description: params[3], status: params[4] || '待回收',
+            planted_chapter: params[5], target_chapter: params[6] || null, impact_level: params[7] || '中等伏笔'
           });
-        } else if (cleanSql.includes('UPDATE foreshadowings SET status = "???"')) {
+        } else if (cleanSql.includes('UPDATE foreshadowings SET status = "已回收"')) {
           const f = data.foreshadowings.find(x => x.project_id === params[1] && x.title === params[2]);
-          if (f) { f.status = '???'; f.resolved_chapter = params[0]; }
+          if (f) { f.status = '已回收'; f.resolved_chapter = params[0]; }
         } else if (cleanSql.includes('UPDATE foreshadowings SET title = COALESCE')) {
           const f = data.foreshadowings.find(x => x.id === params[6]);
           if (f) {
