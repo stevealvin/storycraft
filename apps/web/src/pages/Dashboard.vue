@@ -6,24 +6,24 @@
       <div class="space-y-2 max-w-2xl relative z-10">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-mono">
           <Sparkles class="w-3.5 h-3.5" />
-          <span>???????????</span>
+          <span>长篇网文一致性创作引擎</span>
         </div>
         <h1 class="text-3xl font-bold tracking-tight text-white">
-          {{ projectStore.currentProject?.title || '???? StoryCraft' }}
+          {{ projectStore.currentProject?.title || '欢迎来到 StoryCraft' }}
         </h1>
         <p class="text-slate-400 text-sm leading-relaxed">
-          {{ projectStore.currentProject?.premise || '???????????,???? AI ??????????????????????????' }}
+          {{ projectStore.currentProject?.premise || '选择或创建一个小说作品，使用全套 AI 辅助流程完成立意、卷纲、写章、一致性审查与伏笔沉淀。' }}
         </p>
       </div>
 
       <div class="flex items-center gap-3 relative z-10">
         <router-link to="/studio" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-medium text-sm shadow-lg shadow-indigo-500/25 flex items-center gap-2 transition-all">
           <PenTool class="w-4 h-4" />
-          <span>??????</span>
+          <span>进入正文创作</span>
         </router-link>
         <router-link to="/wizard" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-medium text-sm flex items-center gap-2 transition-all">
           <Plus class="w-4 h-4" />
-          <span>?????</span>
+          <span>初始化新书</span>
         </router-link>
       </div>
     </div>
@@ -32,15 +32,15 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
       <div class="glass-card p-5 rounded-xl border border-slate-800 space-y-3">
         <div class="flex items-center justify-between text-slate-400 text-xs">
-          <span>?????</span>
+          <span>总字数统计</span>
           <BookOpen class="w-4 h-4 text-indigo-400" />
         </div>
         <div class="text-2xl font-bold font-mono text-white">
           {{ projectStore.currentProject?.total_words?.toLocaleString() || 0 }}
-          <span class="text-xs font-normal text-slate-400">?</span>
+          <span class="text-xs font-normal text-slate-400">字</span>
         </div>
         <div class="text-xs text-slate-500 flex items-center gap-2">
-          <span>??: {{ ((projectStore.currentProject?.target_words || 1000000) / 10000).toFixed(0) }} ??</span>
+          <span>目标: {{ ((projectStore.currentProject?.target_words || 1000000) / 10000).toFixed(0) }} 万字</span>
           <div class="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
             <div class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
               :style="{ width: Math.min(100, ((projectStore.currentProject?.total_words || 0) / (projectStore.currentProject?.target_words || 1000000)) * 100) + '%' }"></div>
@@ -50,43 +50,43 @@
 
       <div class="glass-card p-5 rounded-xl border border-slate-800 space-y-3">
         <div class="flex items-center justify-between text-slate-400 text-xs">
-          <span>????? / ??</span>
+          <span>已拆划分卷 / 章节</span>
           <FolderTree class="w-4 h-4 text-purple-400" />
         </div>
         <div class="text-2xl font-bold font-mono text-white">
           {{ projectStore.currentProject?.chapters_count || 0 }}
-          <span class="text-xs font-normal text-slate-400">?</span>
+          <span class="text-xs font-normal text-slate-400">章</span>
         </div>
         <div class="text-xs text-slate-400 flex items-center gap-2">
           <span class="text-purple-400 font-mono">{{ projectStore.currentProject?.volumes_count || 1 }}</span>
-          <span>????????</span>
+          <span>卷大纲正在规划中</span>
         </div>
       </div>
 
       <div class="glass-card p-5 rounded-xl border border-slate-800 space-y-3">
         <div class="flex items-center justify-between text-slate-400 text-xs">
-          <span>???????</span>
+          <span>活跃角色与实体</span>
           <Users class="w-4 h-4 text-pink-400" />
         </div>
         <div class="text-2xl font-bold font-mono text-white">
           {{ projectStore.currentProject?.characters_count || 0 }}
-          <span class="text-xs font-normal text-slate-400">?</span>
+          <span class="text-xs font-normal text-slate-400">位</span>
         </div>
-        <div class="text-xs text-slate-400">???????????</div>
+        <div class="text-xs text-slate-400">登场人设与关系图谱在线</div>
       </div>
 
       <div class="glass-card p-5 rounded-xl border border-slate-800 space-y-3">
         <div class="flex items-center justify-between text-slate-400 text-xs">
-          <span>??????</span>
+          <span>悬挂伏笔线索</span>
           <GitCommit class="w-4 h-4 text-emerald-400" />
         </div>
         <div class="text-2xl font-bold font-mono text-white">
           {{ projectStore.currentProject?.open_foreshadowings_count || 0 }}
-          <span class="text-xs font-normal text-slate-400">????</span>
+          <span class="text-xs font-normal text-slate-400">个待回收</span>
         </div>
         <div class="text-xs text-emerald-400 flex items-center gap-1">
           <CheckCircle2 class="w-3.5 h-3.5" />
-          <span>??????????</span>
+          <span>一致性引擎自动跟踪中</span>
         </div>
       </div>
     </div>
@@ -95,7 +95,7 @@
     <div class="space-y-4">
       <h2 class="text-lg font-bold text-white flex items-center gap-2">
         <Zap class="w-5 h-5 text-indigo-400" />
-        <span>???????</span>
+        <span>核心创作流水线</span>
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -104,8 +104,8 @@
             <Sparkles class="w-5 h-5" />
           </div>
           <div>
-            <div class="font-semibold text-slate-200 text-sm">1. ?????</div>
-            <div class="text-xs text-slate-400 mt-1">?????,????????????</div>
+            <div class="font-semibold text-slate-200 text-sm">1. 深度初始化</div>
+            <div class="text-xs text-slate-400 mt-1">分阶段问答，搭起书骨架、设定集与总纲</div>
           </div>
         </router-link>
 
@@ -114,8 +114,8 @@
             <FolderTree class="w-5 h-5" />
           </div>
           <div>
-            <div class="font-semibold text-slate-200 text-sm">2. ???????</div>
-            <div class="text-xs text-slate-400 mt-1">???????????????</div>
+            <div class="font-semibold text-slate-200 text-sm">2. 卷纲与细纲规划</div>
+            <div class="text-xs text-slate-400 mt-1">拆卷、拆章、补时间线与伏笔计划</div>
           </div>
         </router-link>
 
@@ -124,8 +124,8 @@
             <PenTool class="w-5 h-5" />
           </div>
           <div>
-            <div class="font-semibold text-slate-200 text-sm">3. ?????</div>
-            <div class="text-xs text-slate-400 mt-1">???? -> ?? -> ?? -> ?????</div>
+            <div class="font-semibold text-slate-200 text-sm">3. 一条龙写章</div>
+            <div class="text-xs text-slate-400 mt-1">备上下文 -> 起草 -> 审查 -> 提事实入账</div>
           </div>
         </router-link>
 
@@ -134,8 +134,8 @@
             <ShieldCheck class="w-5 h-5" />
           </div>
           <div>
-            <div class="font-semibold text-slate-200 text-sm">4. ??????</div>
-            <div class="text-xs text-slate-400 mt-1">???????OOC???????</div>
+            <div class="font-semibold text-slate-200 text-sm">4. 多维质量审查</div>
+            <div class="text-xs text-slate-400 mt-1">爽点、一致性、OOC、节奏与追读力</div>
           </div>
         </router-link>
       </div>
@@ -147,13 +147,13 @@
         <div class="flex items-center justify-between">
           <h3 class="font-bold text-slate-200 flex items-center gap-2">
             <FileText class="w-4 h-4 text-indigo-400" />
-            <span>??????</span>
+            <span>最新章节列表</span>
           </h3>
-          <router-link to="/studio" class="text-xs text-indigo-400 hover:underline">?????</router-link>
+          <router-link to="/studio" class="text-xs text-indigo-400 hover:underline">去创作中心</router-link>
         </div>
 
         <div v-if="chapters.length === 0" class="text-center py-10 text-slate-500 text-sm">
-          ??????,?????2. ???????????????
+          暂无章节大纲，点击上方【2. 卷纲与细纲规划】生成章节大纲。
         </div>
 
         <div v-else class="space-y-2">
@@ -161,23 +161,23 @@
             class="flex items-center justify-between p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700 transition-colors">
             <div class="space-y-1">
               <div class="flex items-center gap-3">
-                <span class="font-semibold text-sm text-slate-200">? {{ chap.chapter_num }} ?:{{ chap.title }}</span>
+                <span class="font-semibold text-sm text-slate-200">第 {{ chap.chapter_num }} 章：{{ chap.title }}</span>
                 <span class="px-2 py-0.5 rounded text-[10px] font-medium"
                   :class="chap.status === 'draft' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-slate-800 text-slate-400'">
-                  {{ chap.status === 'draft' ? '???' : '???' }}
+                  {{ chap.status === 'draft' ? '已完成' : '规划中' }}
                 </span>
               </div>
-              <p class="text-xs text-slate-400 line-clamp-1 max-w-md">{{ chap.outline || '???' }}</p>
+              <p class="text-xs text-slate-400 line-clamp-1 max-w-md">{{ chap.outline || '无细纲' }}</p>
             </div>
 
             <div class="flex items-center gap-4 text-xs">
-              <span class="font-mono text-slate-400">{{ chap.word_count || 0 }} ?</span>
+              <span class="font-mono text-slate-400">{{ chap.word_count || 0 }} 字</span>
               <span v-if="chap.review_score" class="px-2 py-0.5 rounded font-mono font-semibold"
                 :class="chap.review_score >= 80 ? 'bg-emerald-900/60 text-emerald-300' : 'bg-amber-900/60 text-amber-300'">
-                {{ chap.review_score }}?
+                {{ chap.review_score }}分
               </span>
               <router-link :to="`/studio?chap=${chap.chapter_num}`" class="px-2.5 py-1 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 border border-indigo-500/30">
-                ??
+                写章
               </router-link>
             </div>
           </div>
@@ -189,9 +189,9 @@
           <div class="flex items-center justify-between">
             <h3 class="font-bold text-slate-200 flex items-center gap-2">
               <Stethoscope class="w-4 h-4 text-purple-400" />
-              <span>??????</span>
+              <span>体检健康报告</span>
             </h3>
-            <router-link to="/doctor" class="text-xs text-purple-400 hover:underline font-mono">?? &rarr;</router-link>
+            <router-link to="/doctor" class="text-xs text-purple-400 hover:underline font-mono">详情 &rarr;</router-link>
           </div>
 
           <div v-if="projectStore.doctorStatus" class="space-y-3">
@@ -201,7 +201,7 @@
                 <span class="text-xs font-normal text-slate-400">/ 100</span>
               </div>
               <div class="text-xs text-slate-400">
-                <span>??: </span>
+                <span>诊断: </span>
                 <span class="text-emerald-400 font-semibold uppercase">{{ projectStore.doctorStatus.status }}</span>
               </div>
             </div>
