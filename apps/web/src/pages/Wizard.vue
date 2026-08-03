@@ -3,10 +3,10 @@
     <div class="text-center space-y-2">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-mono">
         <Sparkles class="w-3.5 h-3.5" />
-        <span>/webnovel-init ?????</span>
+        <span>/webnovel-init 深度初始化</span>
       </div>
-      <h1 class="text-3xl font-bold tracking-tight text-white">?? AI ????????</h1>
-      <p class="text-slate-400 text-sm">??? AI ??,???????????????????????????????</p>
+      <h1 class="text-3xl font-bold tracking-tight text-white">新书 AI 设定与大纲构建器</h1>
+      <p class="text-slate-400 text-sm">分阶段 AI 问答，从题材立意、金手指、角色矩阵、世界观到全书四幕式总纲一步到位。</p>
     </div>
 
     <div class="flex items-center justify-between glass-panel p-4 rounded-xl border border-slate-800 text-xs font-medium">
@@ -24,12 +24,12 @@
     <div v-if="currentStep === 0" class="glass-panel p-8 rounded-2xl border border-slate-800 space-y-6">
       <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
         <BookOpen class="w-5 h-5 text-indigo-400" />
-        <span>???:?????????</span>
+        <span>第一步：选择题材与初步构想</span>
       </h2>
 
       <div class="space-y-4">
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-2">????????</label>
+          <label class="block text-xs font-medium text-slate-400 mb-2">选择网文题材分类</label>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <button v-for="g in genres" :key="g.name" type="button"
               @click="selectedGenre = g.name"
@@ -42,8 +42,8 @@
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-2">??/?????? (?????????????)</label>
-          <textarea v-model="userConcept" rows="3" placeholder="??:????????,????????????,????????????????????..."
+          <label class="block text-xs font-medium text-slate-400 mb-2">灵感/核心看点构想 (如主角金手指、反套路设定等)</label>
+          <textarea v-model="userConcept" rows="3" placeholder="例如：主角穿成退婚废柴，但绑定了【因果反转系统】，只要挨打或者被看不起就能疯狂爆出神级奖励..."
             class="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
         </div>
       </div>
@@ -52,7 +52,7 @@
         <button @click="runStep1" :disabled="loading" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-medium text-sm flex items-center gap-2 shadow-lg shadow-indigo-500/20 transition-all disabled:opacity-50">
           <Loader2 v-if="loading" class="w-4 h-4 animate-spin" />
           <Sparkles v-else class="w-4 h-4" />
-          <span>???????</span>
+          <span>生成立意与书名</span>
         </button>
       </div>
     </div>
@@ -60,38 +60,38 @@
     <div v-if="currentStep === 1" class="glass-panel p-8 rounded-2xl border border-slate-800 space-y-6">
       <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
         <Sparkles class="w-5 h-5 text-indigo-400" />
-        <span>???:?????????</span>
+        <span>第二步：确定书名与核心爽点</span>
       </h2>
 
       <div class="space-y-4">
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-2">??????</label>
+          <label class="block text-xs font-medium text-slate-400 mb-2">选择推荐书名</label>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <button v-for="t in premiseResult.titles" :key="t" type="button"
               @click="selectedTitle = t"
               class="p-3 rounded-xl border text-center transition-all font-bold text-sm"
               :class="selectedTitle === t ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300' : 'bg-slate-900/40 border-slate-800 text-slate-400'">
-              ?{{ t }}?
+              《{{ t }}》
             </button>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">????</label>
+          <label class="block text-xs font-medium text-slate-400 mb-1">作品简介</label>
           <textarea v-model="premiseResult.premise" rows="3" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">???/????????</label>
+          <label class="block text-xs font-medium text-slate-400 mb-1">金手指/核心能力运行逻辑</label>
           <input v-model="premiseResult.golden_finger" type="text" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" />
         </div>
       </div>
 
       <div class="flex justify-between">
-        <button @click="currentStep = 0" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-sm">???</button>
+        <button @click="currentStep = 0" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-sm">上一步</button>
         <button @click="runStep2" :disabled="loading" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-medium flex items-center gap-2 shadow-lg shadow-indigo-500/20">
           <Loader2 v-if="loading" class="w-4 h-4 animate-spin" />
-          <span>???:??????</span>
+          <span>下一步：生成主要角色</span>
         </button>
       </div>
     </div>
@@ -99,7 +99,7 @@
     <div v-if="currentStep === 2" class="glass-panel p-8 rounded-2xl border border-slate-800 space-y-6">
       <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
         <Users class="w-5 h-5 text-indigo-400" />
-        <span>???:????????</span>
+        <span>第三步：登场角色人设矩阵</span>
       </h2>
 
       <div class="space-y-4">
@@ -114,10 +114,10 @@
       </div>
 
       <div class="flex justify-between">
-        <button @click="currentStep = 1" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-sm">???</button>
+        <button @click="currentStep = 1" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-sm">上一步</button>
         <button @click="runStep3" :disabled="loading" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-medium flex items-center gap-2 shadow-lg shadow-indigo-500/20">
           <Loader2 v-if="loading" class="w-4 h-4 animate-spin" />
-          <span>???:??????????</span>
+          <span>下一步：生成世界观与力量体系</span>
         </button>
       </div>
     </div>
@@ -125,26 +125,26 @@
     <div v-if="currentStep === 3" class="glass-panel p-8 rounded-2xl border border-slate-800 space-y-6">
       <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
         <Globe class="w-5 h-5 text-indigo-400" />
-        <span>???:??????????????</span>
+        <span>第四步：世界观、力量体系与四幕式总纲</span>
       </h2>
 
       <div class="space-y-4">
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">?????????</label>
+          <label class="block text-xs font-medium text-slate-400 mb-1">力量体系与境界划分</label>
           <textarea v-model="worldResult.power_system" rows="4" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 font-mono"></textarea>
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">??????????</label>
+          <label class="block text-xs font-medium text-slate-400 mb-1">世界观背景与核心法则</label>
           <textarea v-model="worldResult.world_setting" rows="4" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-xs text-slate-200"></textarea>
         </div>
       </div>
 
       <div class="flex justify-between">
-        <button @click="currentStep = 2" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-sm">???</button>
+        <button @click="currentStep = 2" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-sm">上一步</button>
         <button @click="finishInit" :disabled="loading" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-sm font-medium flex items-center gap-2 shadow-lg shadow-emerald-500/20">
           <CheckCircle2 class="w-4 h-4" />
-          <span>??????????</span>
+          <span>完成初始化并创建项目</span>
         </button>
       </div>
     </div>
@@ -160,12 +160,12 @@ import { Sparkles, BookOpen, ChevronRight, Users, Globe, CheckCircle2, Loader2 }
 const router = useRouter();
 const projectStore = useProjectStore();
 
-const steps = ['?????', '??????', '??????', '??????'];
+const steps = ['选题材构想', '立意与金手指', '角色矩阵人设', '世界观与总纲'];
 const currentStep = ref(0);
 const loading = ref(false);
 
 const genres = ref<any[]>([]);
-const selectedGenre = ref('??');
+const selectedGenre = ref('修仙');
 const userConcept = ref('');
 
 const premiseResult = ref<any>({ titles: [], selected_title: '', premise: '', golden_finger: '' });
@@ -187,7 +187,7 @@ async function runStep1() {
       body: JSON.stringify({ genre: selectedGenre.value, userConcept: userConcept.value }),
     });
     premiseResult.value = await res.json();
-    selectedTitle.value = premiseResult.value.titles[0] || '?????';
+    selectedTitle.value = premiseResult.value.titles[0] || '新网文作品';
     currentStep.value = 1;
   } catch (err) {
     console.error(err);
