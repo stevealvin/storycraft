@@ -3,19 +3,19 @@
     <div>
       <h1 class="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
         <Search class="w-6 h-6 text-indigo-400" />
-        <span>????? RAG ?? (/webnovel-query)</span>
+        <span>状态与知识 RAG 检索 (/webnovel-query)</span>
       </h1>
-      <p class="text-slate-400 text-sm mt-1">???????????????????????,AI ??????????????????</p>
+      <p class="text-slate-400 text-sm mt-1">查询角色现状、伏笔进度、正文细节或任意特定设定，AI 将基于项目数据库与语义索引精准解答。</p>
     </div>
 
     <div class="glass-panel p-4 rounded-2xl border border-slate-800 flex items-center gap-3">
       <Search class="w-5 h-5 text-slate-400" />
-      <input v-model="queryInput" @keyup.enter="runQuery" placeholder="????????,??:????????????????????????????..."
+      <input v-model="queryInput" @keyup.enter="runQuery" placeholder="输入要查询的内容，例如：主角金手指目前等级、黑市线索回收情况、李执事与主角的关系..."
         class="flex-1 bg-transparent text-sm text-slate-100 placeholder-slate-500 focus:outline-none" />
       <button @click="runQuery" :disabled="loading || !queryInput"
         class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center gap-2 disabled:opacity-50 transition-colors">
         <Loader2 v-if="loading" class="w-4 h-4 animate-spin" />
-        <span>??</span>
+        <span>查询</span>
       </button>
     </div>
 
@@ -23,7 +23,7 @@
       <div class="space-y-2">
         <h3 class="font-bold text-indigo-300 text-base flex items-center gap-2">
           <Sparkles class="w-4 h-4 text-indigo-400" />
-          <span>AI ??????</span>
+          <span>AI 检索综合解答</span>
         </h3>
         <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-sm text-slate-200 leading-relaxed whitespace-pre-line">
           {{ searchResult.ai_answer }}
@@ -32,7 +32,7 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-800">
         <div>
-          <h4 class="font-semibold text-xs text-slate-400 mb-2">??????? ({{ searchResult.matched_characters?.length || 0 }})</h4>
+          <h4 class="font-semibold text-xs text-slate-400 mb-2">匹配的角色事实 ({{ searchResult.matched_characters?.length || 0 }})</h4>
           <div class="space-y-1.5">
             <div v-for="c in searchResult.matched_characters" :key="c.name" class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 text-xs">
               <span class="font-bold text-indigo-300">{{ c.name }}</span> ({{ c.cultivation }}): {{ c.description }}
@@ -41,7 +41,7 @@
         </div>
 
         <div>
-          <h4 class="font-semibold text-xs text-slate-400 mb-2">??????? ({{ searchResult.matched_foreshadowings?.length || 0 }})</h4>
+          <h4 class="font-semibold text-xs text-slate-400 mb-2">匹配的伏笔线索 ({{ searchResult.matched_foreshadowings?.length || 0 }})</h4>
           <div class="space-y-1.5">
             <div v-for="f in searchResult.matched_foreshadowings" :key="f.title" class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 text-xs">
               <span class="font-bold text-emerald-400">{{ f.title }}</span> [{{ f.status }}]: {{ f.description }}
