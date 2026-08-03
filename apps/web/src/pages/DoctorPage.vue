@@ -4,16 +4,16 @@
       <div>
         <h1 class="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
           <Stethoscope class="w-6 h-6 text-purple-400" />
-          <span>???? (Doctor System)</span>
+          <span>项目体检 (Doctor System)</span>
         </h1>
-        <p class="text-slate-400 text-sm mt-1">???????????????????????? API ??????</p>
+        <p class="text-slate-400 text-sm mt-1">阶段感知检查工作区目录、数据库索引、伏笔回收率与 API 接口健康度。</p>
       </div>
 
       <button @click="runDiagnostic" :disabled="loading"
         class="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium text-xs flex items-center gap-2 shadow-lg shadow-purple-500/20 disabled:opacity-50">
         <Loader2 v-if="loading" class="w-4 h-4 animate-spin" />
         <RefreshCw v-else class="w-4 h-4" />
-        <span>????????</span>
+        <span>重新运行一键体检</span>
       </button>
     </div>
 
@@ -24,14 +24,14 @@
             {{ report.health_score }}
           </div>
           <div>
-            <div class="text-lg font-bold text-slate-100 uppercase tracking-wide">????: {{ report.status }}</div>
-            <div class="text-xs text-slate-400">????: {{ new Date(report.timestamp).toLocaleString() }}</div>
+            <div class="text-lg font-bold text-slate-100 uppercase tracking-wide">健康状态: {{ report.status }}</div>
+            <div class="text-xs text-slate-400">诊断时间: {{ new Date(report.timestamp).toLocaleString() }}</div>
           </div>
         </div>
       </div>
 
       <div class="space-y-3">
-        <h3 class="font-bold text-slate-200 text-sm">??????:</h3>
+        <h3 class="font-bold text-slate-200 text-sm">具体诊断细项:</h3>
         <div class="space-y-2">
           <div v-for="(check, idx) in report.checks" :key="idx"
             class="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between">
