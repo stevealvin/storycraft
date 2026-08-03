@@ -18,7 +18,7 @@ export async function runDoctor(projectId: string) {
   const projDir = getProjectDir(projectId);
   const checks: DoctorCheckItem[] = [];
 
-  const requiredDirs = ['??', '??', '???', '????', '.story-system/commits', '.webnovel/backups'];
+  const requiredDirs = ['正文', '大纲', '设定集', '审查报告', '.story-system/commits', '.webnovel/backups'];
   let missingDirsCount = 0;
   for (const d of requiredDirs) {
     const fullPath = path.join(projDir, d);
@@ -29,54 +29,54 @@ export async function runDoctor(projectId: string) {
   }
 
   if (missingDirsCount === 0) {
-    checks.push({ name: '?????', category: 'directory', status: 'pass', message: '???????????????' });
+    checks.push({ name: '目录完整性', category: 'directory', status: 'pass', message: '所有必需的工作区目录均完整存在' });
   } else {
-    checks.push({ name: '?????', category: 'directory', status: 'warn', message: `??? ${missingDirsCount} ???????` });
+    checks.push({ name: '目录完整性', category: 'directory', status: 'warn', message: `修复了 ${missingDirsCount} 个缺失的子目录` });
   }
 
   const chapters = db.prepare('SELECT chapter_num, status, word_count, review_score FROM chapters WHERE project_id = ?').all(projectId) as any[];
   const characters = db.prepare('SELECT count(*) as c FROM characters WHERE project_id = ?').get(projectId) as any;
 
   checks.push({
-    name: '???????',
+    name: '数据库与状态树',
     category: 'database',
     status: 'pass',
-    message: `?? ${chapters.length} ???/??,${characters?.c || 0} ?????`
+    message: `包含 ${chapters.length} 章大纲/正文，${characters?.c || 0} 位记录角色`
   });
 
-  const openForeshadowings = db.prepare('SELECT title, planted_chapter FROM foreshadowings WHERE project_id = ? AND status != "???"').all(projectId) as any[];
-  const resolvedForeshadowings = db.prepare('SELECT title FROM foreshadowings WHERE project_id = ? AND status = "???"').all(projectId) as any[];
+  const openForeshadowings = db.prepare('SELECT title, planted_chapter FROM foreshadowings WHERE project_id = ? AND status != "已回收"').all(projectId) as any[];
+  const resolvedForeshadowings = db.prepare('SELECT title FROM foreshadowings WHERE project_id = ? AND status = "已回收"').all(projectId) as any[];
 
   if (openForeshadowings.length > 15) {
     checks.push({
-      name: '???????',
+      name: '伏笔收发健康度',
       category: 'foreshadowings',
       status: 'warn',
-      message: `? ${openForeshadowings.length} ?????????,????????????`
+      message: `有 ${openForeshadowings.length} 个悬挂未回收的伏笔，建议在后续章节中规划回收`
     });
   } else {
     checks.push({
-      name: '???????',
+      name: '伏笔收发健康度',
       category: 'foreshadowings',
       status: 'pass',
-      message: `??????(??? ${resolvedForeshadowings.length} ?,??? ${openForeshadowings.length} ?)`
+      message: `伏笔状态正常（已回收 ${resolvedForeshadowings.length} 个，待回收 ${openForeshadowings.length} 个）`
     });
   }
 
   const unreviewedCount = chapters.filter(c => c.status === 'draft' && (!c.review_score || c.review_score === 0)).length;
   if (unreviewedCount > 0) {
     checks.push({
-      name: '????????',
+      name: '章节质量审查覆盖',
       category: 'reviews',
       status: 'warn',
-      message: `?? ${unreviewedCount} ????????????`
+      message: `尚有 ${unreviewedCount} 章正文未完成多维质量审查`
     });
   } else {
     checks.push({
-      name: '????????',
+      name: '章节质量审查覆盖',
       category: 'reviews',
       status: 'pass',
-      message: '?????????????'
+      message: '已写的正文章节均已完成审查'
     });
   }
 
@@ -84,18 +84,18 @@ export async function runDoctor(projectId: string) {
     const testResponse = await chatCompletion([{ role: 'user', content: 'Ping' }], { max_tokens: 5 });
     if (testResponse) {
       checks.push({
-        name: 'LLM API ????',
+        name: 'LLM API 接口连接',
         category: 'api',
         status: 'pass',
-        message: 'LLM ??????,?????????????'
+        message: 'LLM 接口响应正常，能够进行模型推理与状态提取'
       });
     }
   } catch (err: any) {
     checks.push({
-      name: 'LLM API ????',
+      name: 'LLM API 接口连接',
       category: 'api',
       status: 'fail',
-      message: `API ????: ${err?.message || err}`
+      message: `API 连接失败: ${err?.message || err}`
     });
   }
 
