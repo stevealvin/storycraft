@@ -11,15 +11,15 @@
             <div class="absolute top-1/3 -right-40 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
             <!-- Floating Top Navbar -->
-            <div class="px-2.5 pt-2.5 z-40 flex-none">
+            <div class="px-1.5 pt-1.5 z-40 flex-none">
               <Navbar />
             </div>
 
             <!-- Main Layout with Fixed Sidebar & Inner Scroll Content -->
-            <div class="flex flex-1 px-2.5 py-2.5 gap-2.5 overflow-hidden h-[calc(100vh-4.25rem)]">
+            <div class="flex flex-1 px-1.5 py-1.5 gap-1.5 overflow-hidden h-[calc(100vh-3.5rem)]">
               <Sidebar />
-              <main class="flex-1 overflow-y-auto h-full w-full pr-1">
-                <div class="max-w-7xl mx-auto p-2">
+              <main class="flex-1 overflow-y-auto h-full w-full pr-0.5">
+                <div class="max-w-7xl mx-auto p-1">
                   <router-view />
                 </div>
               </main>
