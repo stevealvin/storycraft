@@ -57,7 +57,7 @@ apiRouter.post('/config/providers/:id/activate', (c) => {
 apiRouter.post('/config/test', async (c) => {
   try {
     const body = await c.req.json();
-    const testResult = await chatCompletion([{ role: 'user', content: '?? API ??' }], {
+    const testResult = await chatCompletion([{ role: 'user', content: '测试 API 连接' }], {
       baseUrl: body.baseUrl,
       model: body.model,
       apiKey: body.apiKey,
@@ -72,21 +72,21 @@ apiRouter.post('/config/test', async (c) => {
 // Genre List & Presets
 apiRouter.get('/genres', (c) => {
   const genres = [
-    { name: '??', description: '???? + ???? + ???? + ????' },
-    { name: '???', description: '???? + ???? + ???? + ????' },
-    { name: '????', description: '???? + ???? + ???? + ????' },
-    { name: '????', description: '???? + ???? + ???? + ????' },
-    { name: '??', description: '???? + AI?? + ???? + ????' },
-    { name: '????', description: '???? + ???? + ???? + ????' },
-    { name: '??', description: '???? + ???? + ???? + ????' },
-    { name: '???', description: '???? + ???? + ???? + ????' },
-    { name: '????', description: '???? + ???? + ???? + ????' },
-    { name: '???', description: '???? + ???? + ???? + ????' },
-    { name: '??', description: '???? + ???? + ???? + ????' },
-    { name: '??', description: '???? + ???? + ???? + ????' },
-    { name: '????', description: '???? + ?????? + ?????' },
-    { name: '??', description: '???? + ????? + ???? + ????' },
-    { name: '????', description: '???? + ???? + ???? + ????' }
+    { name: '修仙', description: '逆天改命 + 长生久视 + 宗门争霸 + 凡人逆袭' },
+    { name: '系统流', description: '数据面板 + 抽奖签到 + 任务驱动 + 轻松爽快' },
+    { name: '都市异能', description: '灵气复苏 + 潜能觉醒 + 暗夜守卫 + 都市装逼' },
+    { name: '规则怪谈', description: '规则解谜 + 诡异降临 + 生死博弈 + 高智破局' },
+    { name: '科幻', description: '星际战列 + AI觉醒 + 赛博朋克 + 宇宙探险' },
+    { name: '悬疑脑洞', description: '反转推理 + 智斗解谜 + 规则探秘 + 沉浸惊悚' },
+    { name: '高武', description: '万族战场 + 气血突破 + 宗师横扫 + 热血战斗' },
+    { name: '克苏鲁', description: '不可名状 + 理智归零 + 密教探秘 + 遗迹解谜' },
+    { name: '历史古代', description: '权谋争霸 + 工业救国 + 帝王之路 + 历史改写' },
+    { name: '无限流', description: '主神空间 + 副本探索 + 队友人设 + 极限生存' },
+    { name: '种田', description: '领地经营 + 积少成多 + 科技攀升 + 建设家园' },
+    { name: '古言', description: '宫斗宅斗 + 破案权谋 + 狗血反转 + 甜虐情感' },
+    { name: '豪门总裁', description: '替身马甲 + 豪门真假千金 + 追妻火葬场' },
+    { name: '末世', description: '丧尸狂潮 + 安全屋经营 + 异能小队 + 秩序重构' },
+    { name: '游戏体育', description: '电竞夺冠 + 全息网游 + 技能搭配 + 战术碾压' }
   ];
   return c.json(genres);
 });
@@ -227,7 +227,7 @@ apiRouter.post('/projects/:id/characters', async (c) => {
   db.prepare(`
     INSERT INTO characters (id, project_id, name, role, status, cultivation, faction, description, relationship_notes)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(charId, id, body.name, body.role || '??', body.status || '??', body.cultivation || '??', body.faction || '??', body.description || '', body.relationship_notes || '');
+  `).run(charId, id, body.name, body.role || '配角', body.status || '活跃', body.cultivation || '暂无', body.faction || '中立', body.description || '', body.relationship_notes || '');
 
   return c.json(db.prepare('SELECT * FROM characters WHERE id = ?').get(charId));
 });
@@ -288,7 +288,7 @@ apiRouter.post('/projects/:id/foreshadowings', async (c) => {
   db.prepare(`
     INSERT INTO foreshadowings (id, project_id, title, description, status, planted_chapter, target_chapter, impact_level)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(fId, id, body.title, body.description || '', body.status || '???', body.planted_chapter || 1, body.target_chapter || null, body.impact_level || '????');
+  `).run(fId, id, body.title, body.description || '', body.status || '待回收', body.planted_chapter || 1, body.target_chapter || null, body.impact_level || '中等伏笔');
 
   return c.json(db.prepare('SELECT * FROM foreshadowings WHERE id = ?').get(fId));
 });
