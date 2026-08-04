@@ -19,7 +19,7 @@ app.route('/api', apiRouter);
 app.get('/health', (c) => c.json({ status: 'ok', time: new Date().toISOString() }));
 
 const port = CONFIG.port;
-console.log(`?? StoryCraft Monorepo Hono Server running at http://localhost:${port}`);
+console.log(`🚀 StoryCraft Monorepo Hono Server running at http://localhost:${port}`);
 
 serve({
   fetch: app.fetch,
